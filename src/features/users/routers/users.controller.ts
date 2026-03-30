@@ -14,7 +14,7 @@ import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
 import { usersServiceInstance } from "../application/users.service";
-import { usersQueryRepository } from "../repositories/users.query.repository";
+import { usersQueryRepositoryInstance } from "../repositories/users.query.repository";
 import type { UserInput } from "../types/users.input.type";
 import type { UsersQueryInput } from "../types/users.query.type";
 import type { UserView } from "../types/users.view.type";
@@ -25,7 +25,9 @@ class UsersController {
     res: Response<UserView | validationErrorsDto>,
   ) {
     try {
-      const findEntity = await usersQueryRepository.findOneById(req.params.id);
+      const findEntity = await usersQueryRepositoryInstance.findOneById(
+        req.params.id,
+      );
 
       if (!findEntity) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -44,7 +46,8 @@ class UsersController {
         locations: ["query"],
       });
 
-      const blogsListOutput = await usersQueryRepository.findAll(queryData);
+      const blogsListOutput =
+        await usersQueryRepositoryInstance.findAll(queryData);
 
       res.status(HttpStatus.Ok).json(blogsListOutput);
     } catch (error) {
@@ -66,7 +69,7 @@ class UsersController {
           .send(result.extensions);
       }
 
-      const createdEntity = await usersQueryRepository.findOneById(
+      const createdEntity = await usersQueryRepositoryInstance.findOneById(
         result.data.insertedId,
       );
 

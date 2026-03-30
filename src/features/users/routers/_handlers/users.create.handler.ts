@@ -5,7 +5,7 @@ import type { RequestWithBody } from "../../../../core/types/request.types";
 import { resultCodeToHttpException } from "../../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../../core/utils/type-guards";
 import { usersServiceInstance } from "../../application/users.service";
-import { usersQueryRepository } from "../../repositories/users.query.repository";
+import { usersQueryRepositoryInstance } from "../../repositories/users.query.repository";
 import type { UserInput } from "../../types/users.input.type";
 import type { UserView } from "../../types/users.view.type";
 
@@ -22,7 +22,7 @@ export async function createUserHandler(
         .send(result.extensions);
     }
 
-    const createdEntity = await usersQueryRepository.findOneById(
+    const createdEntity = await usersQueryRepositoryInstance.findOneById(
       result.data.insertedId,
     );
 

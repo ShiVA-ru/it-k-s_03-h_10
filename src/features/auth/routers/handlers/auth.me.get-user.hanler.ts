@@ -3,7 +3,7 @@ import type { validationErrorsDto } from "../../../../core/types/errors.types";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { IdType } from "../../../../core/types/id.types";
 import type { RequestWithUserId } from "../../../../core/types/request.types";
-import { usersQueryRepository } from "../../../users/repositories/users.query.repository";
+import { usersQueryRepositoryInstance } from "../../../users/repositories/users.query.repository";
 import type { MeView } from "../../types/me.view.type";
 
 export async function getMeHandler(
@@ -18,7 +18,7 @@ export async function getMeHandler(
       return;
     }
 
-    const findEntity = await usersQueryRepository.findMeById(userId);
+    const findEntity = await usersQueryRepositoryInstance.findMeById(userId);
 
     if (!findEntity) {
       return res.sendStatus(HttpStatus.NotFound);
