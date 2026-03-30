@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../../../core/types/http-statuses.types";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { usersService } from "../../users/application/users.service";
+import { usersServiceInstance } from "../../users/application/users.service";
 import { jwtService } from "../application/jwt.service";
 
 export const refreshTokenGuardMiddleware = async (
@@ -25,7 +25,7 @@ export const refreshTokenGuardMiddleware = async (
   const deviceId = verifyResult.data.deviceId;
   const iat = verifyResult.data.iat;
 
-  const userEntity = await usersService.findById(userId);
+  const userEntity = await usersServiceInstance.findById(userId);
 
   if (!userEntity) {
     return res.sendStatus(HttpStatus.Unauthorized);

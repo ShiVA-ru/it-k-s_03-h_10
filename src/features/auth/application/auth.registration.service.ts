@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { emailAdapter } from "../../../adapters/email.adapter";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { usersService } from "../../users/application/users.service";
+import { usersServiceInstance } from "../../users/application/users.service";
 import { usersRepository } from "../../users/repositories/users.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
@@ -36,7 +36,7 @@ export const registrationService = {
     }
     console.log("user not exist");
 
-    const result = await usersService.create(dto);
+    const result = await usersServiceInstance.create(dto);
     console.log("user created", result.data?.insertedId);
 
     if (!result.data) {

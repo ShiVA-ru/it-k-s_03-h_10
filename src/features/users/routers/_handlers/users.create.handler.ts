@@ -4,7 +4,7 @@ import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { RequestWithBody } from "../../../../core/types/request.types";
 import { resultCodeToHttpException } from "../../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../../core/utils/type-guards";
-import { usersService } from "../../application/users.service";
+import { usersServiceInstance } from "../../application/users.service";
 import { usersQueryRepository } from "../../repositories/users.query.repository";
 import type { UserInput } from "../../types/users.input.type";
 import type { UserView } from "../../types/users.view.type";
@@ -14,7 +14,7 @@ export async function createUserHandler(
   res: Response<UserView | validationErrorType[]>,
 ) {
   try {
-    const result = await usersService.create(req.body, true);
+    const result = await usersServiceInstance.create(req.body, true);
 
     if (!isSuccessResult(result)) {
       return res
