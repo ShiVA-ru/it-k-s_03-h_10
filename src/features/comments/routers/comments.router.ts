@@ -3,16 +3,19 @@ import { inputValidationResultMiddleware } from "../../../core/middlewares/valid
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
 import { accessTokenGuardMiddleware } from "../../auth/middlewares/access-token.guard";
 import { commentInputDtoValidation } from "../validation/comments.input-dto.validation.middleware";
-import { deleteCommentHandler } from "./handlers/comments.delete.handler";
-import { getCommentHandler } from "./handlers/comments.get.handler";
-import { updateCommentHandler } from "./handlers/comments.update.handler";
+import { commentsControllerInstance } from "./comments.controller";
 
 export const commentsRouter = Router();
 
 //Заменить тип Response PostView на DTO
 
 commentsRouter
-  .get("/:id", idValidation, inputValidationResultMiddleware, getCommentHandler)
+  .get(
+    "/:id",
+    idValidation,
+    inputValidationResultMiddleware,
+    commentsControllerInstance.getComment,
+  )
   //UPDATE
   .put(
     "/:id",
@@ -20,7 +23,7 @@ commentsRouter
     idValidation,
     commentInputDtoValidation,
     inputValidationResultMiddleware,
-    updateCommentHandler,
+    commentsControllerInstance.updateComment,
   )
   // DELETE
   .delete(
@@ -28,5 +31,5 @@ commentsRouter
     accessTokenGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    deleteCommentHandler,
+    commentsControllerInstance.deleteComment,
   );
