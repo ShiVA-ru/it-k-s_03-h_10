@@ -12,7 +12,7 @@ import type {
   RequestWithParamsAndBody,
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
-import { postsService } from "../../posts/application/posts.service";
+import { postsServiceInstance } from "../../posts/application/posts.service";
 import { postsQueryRepository } from "../../posts/repositories/posts.query.repository";
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type";
@@ -115,7 +115,7 @@ class BlogsController {
   ) {
     try {
       const blogId = req.params.id;
-      const insertedId = await postsService.create({
+      const insertedId = await postsServiceInstance.create({
         blogId,
         title: req.body.title,
         shortDescription: req.body.shortDescription,

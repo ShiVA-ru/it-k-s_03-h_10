@@ -1,8 +1,12 @@
-export type PostDb = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  blogName: string;
-  createdAt?: string;
-};
+export class PostDb {
+  public createdAt: string;
+  constructor(
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public blogName: string,
+  ) {
+    this.createdAt = new Date().toISOString();
+  }
+}

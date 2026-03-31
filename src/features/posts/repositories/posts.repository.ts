@@ -9,7 +9,10 @@ export const postsRepository = {
     return result.insertedId.toString();
   },
 
-  async updateById(id: string, dto: PostDb): Promise<boolean> {
+  async updateById(
+    id: string,
+    dto: Omit<PostDb, "createdAt">,
+  ): Promise<boolean> {
     const updateResult = await postsCollection.updateOne(
       { _id: new ObjectId(id) },
       {

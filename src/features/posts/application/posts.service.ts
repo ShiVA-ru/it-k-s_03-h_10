@@ -1,9 +1,9 @@
 import { blogsRepositoryInstance } from "../../blogs/repositories/blogs.repository";
 import { postsRepository } from "../repositories/posts.repository";
-import type { PostDb } from "../types/posts.db.type";
+import { PostDb } from "../types/posts.db.type";
 import type { PostInput } from "../types/posts.input.type";
 
-export const postsService = {
+class PostsService {
   async create(dto: PostInput): Promise<string | null> {
     const blogEntity = await blogsRepositoryInstance.findOneById(dto.blogId);
 
@@ -11,17 +11,16 @@ export const postsService = {
       return null;
     }
 
-    const newEntity: PostDb = {
-      title: dto.title,
-      shortDescription: dto.shortDescription,
-      content: dto.content,
-      blogId: dto.blogId,
-      blogName: blogEntity.name,
-      createdAt: new Date().toISOString(),
-    };
+    const newEntity = new PostDb(
+      dto.title,
+      dto.shortDescription,
+      dto.content,
+      dto.blogId,
+      blogEntity.name,
+    );
 
     return postsRepository.create(newEntity);
-  },
+  }
 
   async updateById(
     id: string,
@@ -43,9 +42,11 @@ export const postsService = {
     }
 
     return { notFound: false, entity: null };
-  },
+  }
 
   async deleteOneById(id: string): Promise<boolean> {
     return await postsRepository.deleteOneById(id);
-  },
-};
+  }
+}
+
+export const postsServiceInstance = new PostsService();
