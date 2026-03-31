@@ -3,9 +3,7 @@ import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.midd
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
 import { refreshTokenGuardMiddleware } from "../../auth/middlewares/refresh-token.guard";
-import { deleteDevicesHandler } from "./handlers/devices.delete.handler";
-import { deleteDeviceByIdHandler } from "./handlers/devices.delete-by-id.handler";
-import { getUserActiveSessions } from "./handlers/devices.get.handler";
+import { deviceControllerInstance } from "./devices.controller";
 
 export const devicesRouter = Router();
 
@@ -14,15 +12,19 @@ devicesRouter
     "/",
     deviceMetaMiddleware,
     refreshTokenGuardMiddleware,
-    getUserActiveSessions,
+    deviceControllerInstance.getUserActiveSessions,
   )
 
-  .delete("/", refreshTokenGuardMiddleware, deleteDevicesHandler)
+  .delete(
+    "/",
+    refreshTokenGuardMiddleware,
+    deviceControllerInstance.deleteDevices,
+  )
 
   .delete(
     "/:id",
     refreshTokenGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    deleteDeviceByIdHandler,
+    deviceControllerInstance.deleteDeviceByIdHandler,
   );
