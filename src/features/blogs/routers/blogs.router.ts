@@ -6,13 +6,7 @@ import { blogPostInputDtoValidation } from "../../posts/validation/posts.input-d
 import { paginationSortingValidation } from "../../posts/validation/posts.query.validation.middleware";
 import { blogInputDtoValidation } from "../validation/blogs.input-dto.validation.middleware";
 import { paginationSortingSearchValidation } from "../validation/blogs.query.validation.middleware";
-import { createBlogHandler } from "./handlers/blogs.create.handler";
-import { deleteBlogHandler } from "./handlers/blogs.delete.handler";
-import { getBlogHandler } from "./handlers/blogs.get.handler";
-import { getBlogListHandler } from "./handlers/blogs.get-list.handler";
-import { updateBlogHandler } from "./handlers/blogs.update.handler";
-import { createBlogPostHandler } from "./handlers/blogs-posts.create.handler";
-import { getBlogPostsListHandler } from "./handlers/blogs-posts.get-list.handler";
+import { blogsControllerInstance } from "./blogs.controller";
 
 export const blogsRouter = Router();
 
@@ -22,17 +16,22 @@ blogsRouter
     superAdminGuardMiddleware,
     blogInputDtoValidation,
     inputValidationResultMiddleware,
-    createBlogHandler,
+    blogsControllerInstance.createBlog,
   )
 
   .get(
     "/",
     paginationSortingSearchValidation,
     inputValidationResultMiddleware,
-    getBlogListHandler,
+    blogsControllerInstance.getBlogs,
   )
 
-  .get("/:id", idValidation, inputValidationResultMiddleware, getBlogHandler)
+  .get(
+    "/:id",
+    idValidation,
+    inputValidationResultMiddleware,
+    blogsControllerInstance.getBlog,
+  )
 
   .put(
     "/:id",
@@ -40,7 +39,7 @@ blogsRouter
     idValidation,
     blogInputDtoValidation,
     inputValidationResultMiddleware,
-    updateBlogHandler,
+    blogsControllerInstance.updateBlog,
   )
 
   .delete(
@@ -48,14 +47,14 @@ blogsRouter
     superAdminGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    deleteBlogHandler,
+    blogsControllerInstance.deleteBlog,
   )
 
   .get(
     "/:id/posts",
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    getBlogPostsListHandler,
+    blogsControllerInstance.getBlogsPosts,
   )
 
   .post(
@@ -64,5 +63,5 @@ blogsRouter
     idValidation,
     blogPostInputDtoValidation,
     inputValidationResultMiddleware,
-    createBlogPostHandler,
+    blogsControllerInstance.createBlogPost,
   );
