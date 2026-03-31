@@ -1,7 +1,7 @@
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { bcryptService } from "../../auth/application/bcrypt.service";
-import { usersRepository } from "../repositories/users.repository";
+import { usersRepositoryInstance } from "../repositories/users.repository";
 import { UserDb } from "../types/users.db.type";
 import type { UserInput } from "../types/users.input.type";
 
@@ -16,7 +16,7 @@ export class UsersService {
 
     const newEntity = new UserDb(login, email, passwordHash, isAdmin);
 
-    const insertedId = await usersRepository.create(newEntity);
+    const insertedId = await usersRepositoryInstance.create(newEntity);
 
     return {
       status: ResultStatus.Success,
@@ -26,11 +26,11 @@ export class UsersService {
   }
 
   async deleteOneById(id: string): Promise<boolean> {
-    return await usersRepository.deleteOneById(id);
+    return await usersRepositoryInstance.deleteOneById(id);
   }
 
   async findById(id: string): Promise<UserDb | null> {
-    return await usersRepository.findOneById(id);
+    return await usersRepositoryInstance.findOneById(id);
   }
 }
 

@@ -5,7 +5,7 @@ import { isSuccessResult } from "../../../core/utils/type-guards";
 import { deviceService } from "../../devices/application/devices.service";
 import { devicesRepository } from "../../devices/repositories/devices.repository";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map";
-import { usersRepository } from "../../users/repositories/users.repository";
+import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import type { UserView } from "../../users/types/users.view.type";
 import type { TokenPair } from "../types/token-pair.type";
 import { bcryptService } from "./bcrypt.service";
@@ -111,7 +111,7 @@ export const authService = {
     loginOrEmail: string,
     password: string,
   ): Promise<Result<UserView | null>> {
-    const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
+    const user = await usersRepositoryInstance.findByLoginOrEmail(loginOrEmail);
     if (!user)
       return {
         status: ResultStatus.NotFound,

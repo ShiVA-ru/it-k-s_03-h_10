@@ -4,7 +4,7 @@ import { emailAdapter } from "../../../adapters/email.adapter";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { usersServiceInstance } from "../../users/application/users.service";
-import { usersRepository } from "../../users/repositories/users.repository";
+import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
@@ -14,7 +14,8 @@ export const registrationService = {
     const { login, email } = dto;
     console.log(dto);
 
-    const isUserExistByLogin = await usersRepository.isExistByLogin(login);
+    const isUserExistByLogin =
+      await usersRepositoryInstance.isExistByLogin(login);
 
     if (isUserExistByLogin) {
       return {
@@ -24,7 +25,8 @@ export const registrationService = {
         extensions: [{ field: "login", message: "Already Registered" }],
       };
     }
-    const isUserExistByEmail = await usersRepository.isExistByEmail(email);
+    const isUserExistByEmail =
+      await usersRepositoryInstance.isExistByEmail(email);
 
     if (isUserExistByEmail) {
       return {
@@ -48,7 +50,7 @@ export const registrationService = {
       };
     }
 
-    const createdEntity = await usersRepository.findOneById(
+    const createdEntity = await usersRepositoryInstance.findOneById(
       result.data.insertedId,
     );
 
@@ -92,7 +94,9 @@ export const registrationService = {
   },
 
   async confirmEmail(dto: RegistrationConfirmationCode): Promise<Result<true>> {
-    const user = await usersRepository.findOneByConfirmationCode(dto.code);
+    const user = await usersRepositoryInstance.findOneByConfirmationCode(
+      dto.code,
+    );
 
     if (!user) {
       return {
@@ -121,9 +125,8 @@ export const registrationService = {
       };
     }
 
-    const updatedResult = await usersRepository.updateUserConfirmationData(
-      user._id,
-    );
+    const updatedResult =
+      await usersRepositoryInstance.updateUserConfirmationData(user._id);
 
     if (!updatedResult) {
       return {
@@ -145,7 +148,7 @@ export const registrationService = {
     const { email } = dto;
     console.log(dto);
 
-    const user = await usersRepository.isExistByEmail(email);
+    const user = await usersRepositoryInstance.isExistByEmail(email);
 
     if (!user) {
       return {
@@ -182,11 +185,12 @@ export const registrationService = {
         console.error(e);
       });
 
-    const updateResult = await usersRepository.updateUserConfirmationCode(
-      user._id,
-      newConfirmationCode,
-      confirmationCodeExpirationDate,
-    );
+    const updateResult =
+      await usersRepositoryInstance.updateUserConfirmationCode(
+        user._id,
+        newConfirmationCode,
+        confirmationCodeExpirationDate,
+      );
 
     if (!updateResult) {
       return {

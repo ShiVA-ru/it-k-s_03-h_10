@@ -2,7 +2,7 @@ import type { IdType } from "../../../core/types/id.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { postsRepository } from "../../posts/repositories/posts.repository";
-import { usersRepository } from "../../users/repositories/users.repository";
+import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import { commentsRepository } from "../repositories/comments.repository";
 import type { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
@@ -24,7 +24,7 @@ export const commentsService = {
       };
     }
 
-    const userEntity = await usersRepository.findOneById(userId);
+    const userEntity = await usersRepositoryInstance.findOneById(userId);
 
     if (!userEntity) {
       return {

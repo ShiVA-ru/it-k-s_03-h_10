@@ -2,12 +2,12 @@ import { ObjectId, type WithId } from "mongodb";
 import { usersCollection } from "../../../db/mongo";
 import type { UserDb } from "../types/users.db.type";
 
-export const usersRepository = {
+class UsersRepository {
   async create(dto: UserDb): Promise<string> {
     const result = await usersCollection.insertOne(dto);
 
     return result.insertedId.toString();
-  },
+  }
 
   async deleteOneById(id: string): Promise<boolean> {
     const deleteResult = await usersCollection.deleteOne({
@@ -19,7 +19,7 @@ export const usersRepository = {
     }
 
     return true;
-  },
+  }
 
   async findByLoginOrEmail(
     loginOrEmail: string,
@@ -27,7 +27,7 @@ export const usersRepository = {
     return usersCollection.findOne({
       $or: [{ email: loginOrEmail }, { login: loginOrEmail }],
     });
-  },
+  }
 
   async isExistByLoginOrEmail(
     login: string,
@@ -36,15 +36,15 @@ export const usersRepository = {
     return usersCollection.findOne({
       $or: [{ login }, { email }],
     });
-  },
+  }
 
   async isExistByLogin(login: string): Promise<WithId<UserDb> | null> {
     return usersCollection.findOne({ login });
-  },
+  }
 
   async isExistByEmail(email: string): Promise<WithId<UserDb> | null> {
     return usersCollection.findOne({ email });
-  },
+  }
 
   async findOneById(id: string): Promise<UserDb | null> {
     const item = await usersCollection.findOne({ _id: new ObjectId(id) });
@@ -54,7 +54,7 @@ export const usersRepository = {
     }
 
     return item;
-  },
+  }
 
   async findOneByConfirmationCode(
     code: string,
@@ -66,7 +66,7 @@ export const usersRepository = {
     }
 
     return item;
-  },
+  }
 
   async updateUserConfirmationData(_id: ObjectId): Promise<boolean> {
     const updateResult = await usersCollection.updateOne(
@@ -85,7 +85,7 @@ export const usersRepository = {
     }
 
     return true;
-  },
+  }
 
   async updateUserConfirmationCode(
     _id: ObjectId,
@@ -107,5 +107,7 @@ export const usersRepository = {
     }
 
     return true;
-  },
-};
+  }
+}
+
+export const usersRepositoryInstance = new UsersRepository();
