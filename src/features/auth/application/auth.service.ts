@@ -11,7 +11,7 @@ import type { TokenPair } from "../types/token-pair.type";
 import { bcryptService } from "./bcrypt.service";
 import { jwtService } from "./jwt.service";
 
-export const authService = {
+class AuthService {
   async loginUser(
     loginOrEmail: string,
     password: string,
@@ -73,7 +73,7 @@ export const authService = {
         iat: now,
       },
     };
-  },
+  }
 
   async logoutByDevice(
     userId: string,
@@ -108,7 +108,7 @@ export const authService = {
         data: null,
       };
     }
-  },
+  }
 
   async checkUserCredentials(
     loginOrEmail: string,
@@ -142,7 +142,7 @@ export const authService = {
       extensions: [],
       data: mapEntityToViewModel(user),
     };
-  },
+  }
 
   async updateTokens(
     userId: string,
@@ -181,5 +181,7 @@ export const authService = {
         iat: now,
       },
     };
-  },
-};
+  }
+}
+
+export const authServiceInstance = new AuthService();

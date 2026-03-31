@@ -8,8 +8,8 @@
  */
 
 import config from "../src/core/settings/config";
-import { runDB, closeDB, devicesCollection } from "../src/db/mongo";
-import { devicesRepository } from "../src/features/devices/repositories/devices.repository";
+import { closeDB, devicesCollection, runDB } from "../src/db/mongo";
+import { devicesRepositoryInstance } from "../src/features/devices/repositories/devices.repository";
 
 describe("devices.repository", () => {
   beforeAll(async () => {
@@ -64,7 +64,7 @@ describe("devices.repository", () => {
     // Insert sessions via repository
     const inserted = [];
     for (const d of devices) {
-      const res = await devicesRepository.create(d as any);
+      const res = await devicesRepositoryInstance.create(d as any);
       inserted.push(res);
     }
 
@@ -74,7 +74,10 @@ describe("devices.repository", () => {
 
     // Delete one session by deviceId
     const deviceToDelete = "device-b-2";
-    const deleted = await devicesRepository.deleteOneById(deviceToDelete, userId);
+    const deleted = await devicesRepositoryInstance.deleteOneById(
+      deviceToDelete,
+      userId,
+    );
     expect(deleted).toBe(true);
 
     // Now count should be decreased by one
@@ -83,7 +86,9 @@ describe("devices.repository", () => {
 
     // Ensure the specific deviceId is not present anymore
     const remaining = await devicesCollection.find({ userId }).toArray();
-    const hasDeletedDevice = remaining.some((r) => r.deviceId === deviceToDelete);
+    const hasDeletedDevice = remaining.some(
+      (r) => r.deviceId === deviceToDelete,
+    );
     expect(hasDeletedDevice).toBe(false);
   });
 });

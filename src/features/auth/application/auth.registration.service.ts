@@ -9,7 +9,7 @@ import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
-export const registrationService = {
+class RegistrationService {
   async registration(dto: UserInput): Promise<Result<true>> {
     const { login, email } = dto;
     console.log(dto);
@@ -91,7 +91,7 @@ export const registrationService = {
       extensions: [],
       data: true,
     };
-  },
+  }
 
   async confirmEmail(dto: RegistrationConfirmationCode): Promise<Result<true>> {
     const user = await usersRepositoryInstance.findOneByConfirmationCode(
@@ -142,7 +142,7 @@ export const registrationService = {
       extensions: [],
       data: true,
     };
-  },
+  }
 
   async emailResending(dto: RegistrationEmailResending): Promise<Result<true>> {
     const { email } = dto;
@@ -206,5 +206,7 @@ export const registrationService = {
       extensions: [],
       data: true,
     };
-  },
-};
+  }
+}
+
+export const registrationServiceInstance = new RegistrationService();

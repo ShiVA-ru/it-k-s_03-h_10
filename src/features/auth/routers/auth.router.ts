@@ -1,20 +1,14 @@
 import { Router } from "express";
+import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.middleware";
 import { rateLimitGuardMiddleware } from "../../../core/middlewares/guards/rate-limit.guard";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
 import { userInputDtoValidation } from "../../users/validation/users.input-dto.validation.middleware";
 import { accessTokenGuardMiddleware } from "../middlewares/access-token.guard";
-import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.middleware";
 import { refreshTokenGuardMiddleware } from "../middlewares/refresh-token.guard";
 import { loginInputDtoValidation } from "../validation/auth.input-dto.validation.middleware";
 import { confirmationCodeValidation } from "../validation/auth.registration-confirm.validation.middleware";
 import { emailValidation } from "../validation/auth.registration-resending.validation.middleware";
-import { loginHandler } from "./handlers/auth.login.handler";
-import { logoutHandler } from "./handlers/auth.logout.handler";
-import { getMeHandler } from "./handlers/auth.me.get-user.hanler";
-import { refreshTokenHandler } from "./handlers/auth.refresh-token.handler";
-import { registrationHandler } from "./handlers/auth.registration.handler";
-import { registrationConfirmationHandler } from "./handlers/auth.registration-confirmation.handler";
-import { registrationEmailResendingHandler } from "./handlers/auth.registration-email-resending.handler";
+import { authControllerInstance } from "./auth.controller";
 
 export const authRouter = Router();
 
@@ -25,20 +19,24 @@ authRouter
     loginInputDtoValidation,
     inputValidationResultMiddleware,
     deviceMetaMiddleware,
-    loginHandler,
+    authControllerInstance.login,
   )
-  .post("/logout", refreshTokenGuardMiddleware, logoutHandler)
+  .post("/logout", refreshTokenGuardMiddleware, authControllerInstance.logout)
 
-  .post("/refresh-token", refreshTokenGuardMiddleware, refreshTokenHandler)
+  .post(
+    "/refresh-token",
+    refreshTokenGuardMiddleware,
+    authControllerInstance.refreshToken,
+  )
 
-  .get("/me", accessTokenGuardMiddleware, getMeHandler)
+  .get("/me", accessTokenGuardMiddleware, authControllerInstance.getMe)
 
   .post(
     "/registration",
     rateLimitGuardMiddleware,
     userInputDtoValidation,
     inputValidationResultMiddleware,
-    registrationHandler,
+    authControllerInstance.registration,
   )
 
   .post(
@@ -46,7 +44,7 @@ authRouter
     rateLimitGuardMiddleware,
     confirmationCodeValidation,
     inputValidationResultMiddleware,
-    registrationConfirmationHandler,
+    authControllerInstance.registrationConfirmation,
   )
 
   .post(
@@ -54,5 +52,5 @@ authRouter
     rateLimitGuardMiddleware,
     emailValidation,
     inputValidationResultMiddleware,
-    registrationEmailResendingHandler,
+    authControllerInstance.registrationEmailResending,
   );
