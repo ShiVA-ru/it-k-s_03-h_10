@@ -7,7 +7,7 @@ import { commentsRepository } from "../repositories/comments.repository";
 import type { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
 
-export const commentsService = {
+class CommentsService {
   async create(
     userId: string,
     postId: string,
@@ -52,7 +52,7 @@ export const commentsService = {
       extensions: [],
       data: { id: commentId },
     };
-  },
+  }
 
   async updateById(
     userId: string,
@@ -95,7 +95,7 @@ export const commentsService = {
       extensions: [],
       data: true,
     };
-  },
+  }
 
   async deleteOneById(userId: string, id: string): Promise<Result<true>> {
     const deletedEntity = await commentsRepository.findOneById(id);
@@ -134,5 +134,7 @@ export const commentsService = {
       extensions: [],
       data: true,
     };
-  },
-};
+  }
+}
+
+export const commentsServiceInstance = new CommentsService();

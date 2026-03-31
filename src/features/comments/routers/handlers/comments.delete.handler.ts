@@ -5,7 +5,7 @@ import type { RequestWithParamsUserId } from "../../../../core/types/request.typ
 import type { URIParamsId } from "../../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../../core/utils/type-guards";
-import { commentsService } from "../../application/comments.service";
+import { commentsServiceInstance } from "../../application/comments.service";
 
 export async function deleteCommentHandler(
   req: RequestWithParamsUserId<URIParamsId, IdType>,
@@ -21,7 +21,7 @@ export async function deleteCommentHandler(
       return;
     }
 
-    const deletedResult = await commentsService.deleteOneById(
+    const deletedResult = await commentsServiceInstance.deleteOneById(
       userId,
       req.params.id,
     );

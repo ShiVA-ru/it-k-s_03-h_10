@@ -12,7 +12,7 @@ import type {
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { commentsService } from "../../comments/application/comments.service";
+import { commentsServiceInstance } from "../../comments/application/comments.service";
 import { commentsQueryRepository } from "../../comments/repositories/comments.query.repository";
 import type { CommentInput } from "../../comments/types/comments.input.type";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type";
@@ -131,7 +131,7 @@ class PostsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const createResult = await commentsService.create(
+      const createResult = await commentsServiceInstance.create(
         userId,
         postId,
         req.body,
