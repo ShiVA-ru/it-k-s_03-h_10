@@ -5,7 +5,7 @@ import type { Paginator } from "../../../../core/types/paginator.type";
 import { postsQueryRepository } from "../../../posts/repositories/posts.query.repository";
 import type { PostsQueryInput } from "../../../posts/types/posts.query.type";
 import type { PostView } from "../../../posts/types/posts.view.type";
-import { blogsQueryRepository } from "../../repositories/blogs.query.repository";
+import { blogsQueryRepositoryInstance } from "../../repositories/blogs.query.repository";
 
 export async function getBlogPostsListHandler(
   req: Request,
@@ -13,7 +13,7 @@ export async function getBlogPostsListHandler(
 ) {
   try {
     const blogId = req.params.id.toString();
-    const blog = await blogsQueryRepository.findOneById(blogId);
+    const blog = await blogsQueryRepositoryInstance.findOneById(blogId);
 
     if (!blog) {
       return res.sendStatus(HttpStatus.NotFound);

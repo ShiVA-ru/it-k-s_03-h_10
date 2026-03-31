@@ -1,11 +1,11 @@
-import { blogsRepository } from "../../blogs/repositories/blogs.repository";
+import { blogsRepositoryInstance } from "../../blogs/repositories/blogs.repository";
 import { postsRepository } from "../repositories/posts.repository";
 import type { PostDb } from "../types/posts.db.type";
 import type { PostInput } from "../types/posts.input.type";
 
 export const postsService = {
   async create(dto: PostInput): Promise<string | null> {
-    const blogEntity = await blogsRepository.findOneById(dto.blogId);
+    const blogEntity = await blogsRepositoryInstance.findOneById(dto.blogId);
 
     if (!blogEntity) {
       return null;
@@ -27,7 +27,7 @@ export const postsService = {
     id: string,
     dto: PostInput,
   ): Promise<{ notFound: boolean; entity: "post" | "blog" | null }> {
-    const blogEntity = await blogsRepository.findOneById(dto.blogId);
+    const blogEntity = await blogsRepositoryInstance.findOneById(dto.blogId);
 
     if (!blogEntity) {
       return { notFound: true, entity: "blog" };
@@ -48,17 +48,4 @@ export const postsService = {
   async deleteOneById(id: string): Promise<boolean> {
     return await postsRepository.deleteOneById(id);
   },
-
-  // async findPostByBlogId(
-  //   blogId: string,
-  //   queryDto: PostsQueryInput,
-  // ): Promise<{ items: WithId<PostDb>[]; totalCount: number } | null> {
-  //   const blogEntity = await blogsRepository.findOneById(blogId);
-
-  //   if (!blogEntity) {
-  //     return null;
-  //   }
-
-  //   return postsRepository.findByBlogId(blogId, queryDto);
-  // },
 };

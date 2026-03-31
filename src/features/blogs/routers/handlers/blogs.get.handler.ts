@@ -3,7 +3,7 @@ import type { validationErrorsDto } from "../../../../core/types/errors.types";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { RequestWithParams } from "../../../../core/types/request.types";
 import type { URIParamsId } from "../../../../core/types/uri-params.type";
-import { blogsQueryRepository } from "../../repositories/blogs.query.repository";
+import { blogsQueryRepositoryInstance } from "../../repositories/blogs.query.repository";
 import type { BlogView } from "../../types/blogs.view.type";
 
 export async function getBlogHandler(
@@ -11,7 +11,9 @@ export async function getBlogHandler(
   res: Response<BlogView | validationErrorsDto>,
 ) {
   try {
-    const findEntity = await blogsQueryRepository.findOneById(req.params.id);
+    const findEntity = await blogsQueryRepositoryInstance.findOneById(
+      req.params.id,
+    );
 
     if (!findEntity) {
       return res.sendStatus(HttpStatus.NotFound);

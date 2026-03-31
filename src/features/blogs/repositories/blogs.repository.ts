@@ -3,12 +3,12 @@ import { blogsCollection } from "../../../db/mongo";
 import type { BlogDb } from "../types/blogs.db.type";
 import type { BlogInput } from "../types/blogs.input.type";
 
-export const blogsRepository = {
+class BlogsRepository {
   async create(dto: BlogDb): Promise<string> {
     const result = await blogsCollection.insertOne(dto);
 
     return result.insertedId.toString();
-  },
+  }
 
   async updateById(id: string, dto: BlogInput): Promise<boolean> {
     const updateResult = await blogsCollection.updateOne(
@@ -27,7 +27,7 @@ export const blogsRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteOneById(id: string): Promise<boolean> {
     const deleteResult = await blogsCollection.deleteOne({
@@ -39,7 +39,7 @@ export const blogsRepository = {
     }
 
     return true;
-  },
+  }
 
   async findOneById(id: string): Promise<BlogDb | null> {
     const item = await blogsCollection.findOne({ _id: new ObjectId(id) });
@@ -49,5 +49,7 @@ export const blogsRepository = {
     }
 
     return item;
-  },
-};
+  }
+}
+
+export const blogsRepositoryInstance = new BlogsRepository();
