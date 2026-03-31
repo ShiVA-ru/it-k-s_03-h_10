@@ -3,7 +3,7 @@ import type { validationErrorsDto } from "../../../../core/types/errors.types";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { RequestWithBody } from "../../../../core/types/request.types";
 import { postsServiceInstance } from "../../application/posts.service";
-import { postsQueryRepository } from "../../repositories/posts.query.repository";
+import { postsQueryRepositoryInstance } from "../../repositories/posts.query.repository";
 import type { PostInput } from "../../types/posts.input.type";
 import type { PostView } from "../../types/posts.view.type";
 
@@ -18,7 +18,8 @@ export async function createPostHandler(
       return res.sendStatus(HttpStatus.NotFound);
     }
 
-    const createdEntity = await postsQueryRepository.findOneById(insertedId);
+    const createdEntity =
+      await postsQueryRepositoryInstance.findOneById(insertedId);
 
     if (!createdEntity) {
       return res.sendStatus(HttpStatus.NotFound);

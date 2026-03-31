@@ -13,7 +13,7 @@ import type {
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { postsServiceInstance } from "../../posts/application/posts.service";
-import { postsQueryRepository } from "../../posts/repositories/posts.query.repository";
+import { postsQueryRepositoryInstance } from "../../posts/repositories/posts.query.repository";
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type";
 import type { PostView } from "../../posts/types/posts.view.type";
@@ -72,7 +72,7 @@ class BlogsController {
         locations: ["query"],
       });
 
-      const postsListOutput = await postsQueryRepository.findByBlogId(
+      const postsListOutput = await postsQueryRepositoryInstance.findByBlogId(
         blogId,
         queryData,
       );
@@ -126,7 +126,8 @@ class BlogsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const createdEntity = await postsQueryRepository.findOneById(insertedId);
+      const createdEntity =
+        await postsQueryRepositoryInstance.findOneById(insertedId);
 
       if (!createdEntity) {
         return res.sendStatus(HttpStatus.NotFound);

@@ -1,13 +1,13 @@
 import type { Response } from "express";
 import { matchedData } from "express-validator";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
+import type { IdType } from "../../../../core/types/id.types";
 import type { Paginator } from "../../../../core/types/paginator.type";
 import type { RequestWithParams } from "../../../../core/types/request.types";
 import { commentsQueryRepository } from "../../../comments/repositories/comments.query.repository";
 import type { CommentsQueryInput } from "../../../comments/types/comments.query.type";
 import type { CommentView } from "../../../comments/types/comments.view.type";
-import type { IdType } from "../../../../core/types/id.types";
-import { postsRepository } from "../../repositories/posts.repository";
+import { postsRepositoryInstance } from "../../repositories/posts.repository";
 
 export async function getPostCommentsListHandler(
   req: RequestWithParams<IdType>,
@@ -19,7 +19,7 @@ export async function getPostCommentsListHandler(
       locations: ["query"],
     });
 
-    const queryPost = await postsRepository.findOneById(postId);
+    const queryPost = await postsRepositoryInstance.findOneById(postId);
 
     if (!queryPost) {
       return res.sendStatus(HttpStatus.NotFound);

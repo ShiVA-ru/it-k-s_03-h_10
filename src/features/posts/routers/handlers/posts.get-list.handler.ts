@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { Paginator } from "../../../../core/types/paginator.type";
-import { postsQueryRepository } from "../../repositories/posts.query.repository";
+import { postsQueryRepositoryInstance } from "../../repositories/posts.query.repository";
 import type { PostsQueryInput } from "../../types/posts.query.type";
 import type { PostView } from "../../types/posts.view.type";
 
@@ -15,7 +15,8 @@ export async function getPostListHandler(
       locations: ["query"],
     });
 
-    const postsListOutput = await postsQueryRepository.findAll(queryData);
+    const postsListOutput =
+      await postsQueryRepositoryInstance.findAll(queryData);
 
     res.status(HttpStatus.Ok).json(postsListOutput);
   } catch (error) {

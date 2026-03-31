@@ -2,12 +2,12 @@ import { ObjectId, type WithId } from "mongodb";
 import { postsCollection } from "../../../db/mongo";
 import type { PostDb } from "../types/posts.db.type";
 
-export const postsRepository = {
+class PostsRepository {
   async create(dto: PostDb): Promise<string> {
     const result = await postsCollection.insertOne(dto);
 
     return result.insertedId.toString();
-  },
+  }
 
   async updateById(
     id: string,
@@ -31,7 +31,7 @@ export const postsRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteOneById(id: string): Promise<boolean> {
     const deleteResult = await postsCollection.deleteOne({
@@ -43,7 +43,7 @@ export const postsRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteByBlogId(blogId: string): Promise<void> {
     const deleteResult = await postsCollection.deleteMany({
@@ -55,7 +55,7 @@ export const postsRepository = {
     }
 
     return;
-  },
+  }
 
   async findOneById(id: string): Promise<WithId<PostDb> | null> {
     const item = await postsCollection.findOne({ _id: new ObjectId(id) });
@@ -65,5 +65,7 @@ export const postsRepository = {
     }
 
     return item;
-  },
-};
+  }
+}
+
+export const postsRepositoryInstance = new PostsRepository();

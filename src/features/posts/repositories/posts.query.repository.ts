@@ -7,7 +7,7 @@ import type { PostView } from "../types/posts.view.type";
 import { mapPostsToPaginatedView } from "./mappers/posts.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/posts.entity-map";
 
-export const postsQueryRepository = {
+class PostsQueryRepository {
   async findAll(queryDto: PostsQueryInput): Promise<Paginator<PostView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const filter = {};
@@ -28,7 +28,7 @@ export const postsQueryRepository = {
     });
 
     return postsListOutput;
-  },
+  }
 
   async findOneById(id: string): Promise<PostView | null> {
     const item = await postsCollection.findOne({ _id: new ObjectId(id) });
@@ -38,7 +38,7 @@ export const postsQueryRepository = {
     }
 
     return mapEntityToViewModel(item);
-  },
+  }
 
   async findByBlogId(
     blogId: string,
@@ -64,5 +64,7 @@ export const postsQueryRepository = {
     });
 
     return postsListOutput;
-  },
-};
+  }
+}
+
+export const postsQueryRepositoryInstance = new PostsQueryRepository();

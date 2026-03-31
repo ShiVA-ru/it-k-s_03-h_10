@@ -1,7 +1,7 @@
 import type { IdType } from "../../../core/types/id.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { postsRepository } from "../../posts/repositories/posts.repository";
+import { postsRepositoryInstance } from "../../posts/repositories/posts.repository";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import { commentsRepository } from "../repositories/comments.repository";
 import type { CommentDb } from "../types/comments.db.type";
@@ -13,7 +13,7 @@ export const commentsService = {
     postId: string,
     dto: CommentInput,
   ): Promise<Result<IdType | null>> {
-    const postEntity = await postsRepository.findOneById(postId);
+    const postEntity = await postsRepositoryInstance.findOneById(postId);
 
     if (!postEntity) {
       return {
