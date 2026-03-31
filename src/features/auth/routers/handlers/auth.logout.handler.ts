@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import { isSuccessResult } from "../../../../core/utils/type-guards";
-import { deviceService } from "../../../devices/application/devices.service";
+import { deviceServiceInstance } from "../../../devices/application/devices.service";
 import { authService } from "../../application/auth.service";
 
 export const logoutHandler = async (req: Request, res: Response) => {
@@ -12,7 +12,7 @@ export const logoutHandler = async (req: Request, res: Response) => {
       return res.sendStatus(HttpStatus.Unauthorized);
     }
 
-    const isSessionExist = await deviceService.findById(deviceId, iat);
+    const isSessionExist = await deviceServiceInstance.findById(deviceId, iat);
 
     if (!isSessionExist) {
       return res.sendStatus(HttpStatus.Unauthorized);

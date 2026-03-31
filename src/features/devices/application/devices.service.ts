@@ -1,26 +1,24 @@
-import { randomUUID } from "node:crypto";
 import dayjs from "dayjs";
 import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { devicesRepository } from "../repositories/devices.repository";
-import type { DeviceDb } from "../types/devices.db.type";
+import { DeviceDb } from "../types/devices.db.type";
 
-export const deviceService = {
+class DeviceService {
   async create(
     dto: DeviceMeta & { userId: string },
-    now: number,
+    iat: number,
   ): Promise<Result<{ insertedId: string } | null>> {
     const { ip, userAgent, userId } = dto;
 
-    const newEntity: DeviceDb = {
+    const newEntity = new DeviceDb(
       ip,
-      title: userAgent,
+      userAgent,
+      iat,
+      dayjs().add(1, "hour").toISOString(),
       userId,
-      deviceId: randomUUID(),
-      iat: now,
-      expiresDate: dayjs().add(1, "hour").toISOString(),
-    };
+    );
 
     const insertedId = await devicesRepository.create(newEntity);
 
@@ -38,21 +36,23 @@ export const deviceService = {
       extensions: [],
       data: { insertedId: newEntity.deviceId },
     };
-  },
+  }
 
   async findById(deviceId: string, iat: number): Promise<DeviceDb | null> {
     return await devicesRepository.findOneById(deviceId, iat);
-  },
+  }
 
   async findByDeviceId(deviceId: string): Promise<DeviceDb | null> {
     return await devicesRepository.findByDeviceId(deviceId);
-  },
+  }
 
   async deleteOneById(deviceId: string, userId: string): Promise<boolean> {
     return await devicesRepository.deleteOneById(deviceId, userId);
-  },
+  }
 
   async deleteOther(userId: string, deviceId: string): Promise<boolean> {
     return await devicesRepository.deleteOther(userId, deviceId);
-  },
-};
+  }
+}
+
+export const deviceServiceInstance = new DeviceService();

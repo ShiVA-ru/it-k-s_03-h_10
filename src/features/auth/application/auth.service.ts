@@ -2,7 +2,7 @@ import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { deviceService } from "../../devices/application/devices.service";
+import { deviceServiceInstance } from "../../devices/application/devices.service";
 import { devicesRepository } from "../../devices/repositories/devices.repository";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
@@ -34,7 +34,7 @@ export const authService = {
     }
     const userId = userCredentialsResult.data.id;
 
-    const createSessionResult = await deviceService.create(
+    const createSessionResult = await deviceServiceInstance.create(
       {
         ...deviceMeta,
         userId,

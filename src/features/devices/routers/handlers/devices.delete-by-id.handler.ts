@@ -2,7 +2,7 @@ import type { Response } from "express";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { RequestWithParams } from "../../../../core/types/request.types";
 import type { URIParamsId } from "../../../../core/types/uri-params.type";
-import { deviceService } from "../../application/devices.service";
+import { deviceServiceInstance } from "../../application/devices.service";
 
 export async function deleteDeviceByIdHandler(
   req: RequestWithParams<URIParamsId>,
@@ -12,7 +12,7 @@ export async function deleteDeviceByIdHandler(
     const deviceId = req.params.id;
     const userId = req.refreshTokenPayload.userId;
 
-    const findEntity = await deviceService.findByDeviceId(deviceId);
+    const findEntity = await deviceServiceInstance.findByDeviceId(deviceId);
 
     if (!userId || !findEntity) {
       return res.sendStatus(HttpStatus.NotFound);
@@ -22,7 +22,10 @@ export async function deleteDeviceByIdHandler(
       return res.sendStatus(HttpStatus.Forbidden);
     }
 
-    const isDeleted = await deviceService.deleteOneById(req.params.id, userId);
+    const isDeleted = await deviceServiceInstance.deleteOneById(
+      req.params.id,
+      userId,
+    );
 
     if (!isDeleted) {
       return res.sendStatus(HttpStatus.NotFound);

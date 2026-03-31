@@ -1,8 +1,15 @@
-export type DeviceDb = {
-  ip: string;
-  title: string;
-  iat: number;
-  expiresDate: string;
-  deviceId: string;
-  userId: string;
-};
+import { randomUUID } from "node:crypto";
+
+export class DeviceDb {
+  public deviceId: string;
+
+  constructor(
+    public ip: string,
+    public title: string,
+    public iat: number,
+    public expiresDate: string,
+    public userId: string,
+  ) {
+    this.deviceId = randomUUID();
+  }
+}

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
-import { deviceService } from "../../application/devices.service";
+import { deviceServiceInstance } from "../../application/devices.service";
 
 export async function deleteDevicesHandler(req: Request, res: Response) {
   try {
@@ -10,12 +10,8 @@ export async function deleteDevicesHandler(req: Request, res: Response) {
     if (!userId || !deviceId) {
       return res.sendStatus(HttpStatus.NotFound);
     }
-    console.log("===delete other sessions===");
-    console.log("userId", userId);
-    console.log("deviceId", deviceId);
-    console.log("===end of deleting other sessions===");
 
-    const isDeleted = await deviceService.deleteOther(userId, deviceId);
+    const isDeleted = await deviceServiceInstance.deleteOther(userId, deviceId);
 
     if (!isDeleted) {
       return res.sendStatus(HttpStatus.NotFound);

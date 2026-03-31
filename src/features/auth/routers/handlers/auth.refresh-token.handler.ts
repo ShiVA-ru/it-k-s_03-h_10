@@ -4,7 +4,7 @@ import type { IdType } from "../../../../core/types/id.types";
 import type { RequestWithUserId } from "../../../../core/types/request.types";
 import { isSuccessResult } from "../../../../core/utils/type-guards";
 import { authService } from "../../application/auth.service";
-import { deviceService } from "../../../devices/application/devices.service";
+import { deviceServiceInstance } from "../../../devices/application/devices.service";
 
 export const refreshTokenHandler = async (
   req: RequestWithUserId<IdType>,
@@ -17,7 +17,7 @@ export const refreshTokenHandler = async (
       return res.sendStatus(HttpStatus.Unauthorized);
     }
 
-    const isSessionExist = await deviceService.findById(deviceId, iat);
+    const isSessionExist = await deviceServiceInstance.findById(deviceId, iat);
 
     if (!isSessionExist) {
       return res.sendStatus(HttpStatus.Unauthorized);
