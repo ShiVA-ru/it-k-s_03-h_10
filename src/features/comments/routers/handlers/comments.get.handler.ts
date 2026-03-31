@@ -2,7 +2,7 @@ import type { Response } from "express";
 import { HttpStatus } from "../../../../core/types/http-statuses.types";
 import type { RequestWithParams } from "../../../../core/types/request.types";
 import type { URIParamsId } from "../../../../core/types/uri-params.type";
-import { commentsQueryRepository } from "../../repositories/comments.query.repository";
+import { commentsQueryRepositoryInstance } from "../../repositories/comments.query.repository";
 import type { CommentView } from "../../types/comments.view.type";
 
 export async function getCommentHandler(
@@ -10,7 +10,9 @@ export async function getCommentHandler(
   res: Response<CommentView>,
 ) {
   try {
-    const findEntity = await commentsQueryRepository.findOneById(req.params.id);
+    const findEntity = await commentsQueryRepositoryInstance.findOneById(
+      req.params.id,
+    );
 
     if (!findEntity) {
       return res.sendStatus(HttpStatus.NotFound);

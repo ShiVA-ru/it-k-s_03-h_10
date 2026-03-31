@@ -3,8 +3,8 @@ import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { postsRepositoryInstance } from "../../posts/repositories/posts.repository";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
-import { commentsRepository } from "../repositories/comments.repository";
-import type { CommentDb } from "../types/comments.db.type";
+import { commentsRepositoryInstance } from "../repositories/comments.repository";
+import { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
 
 class CommentsService {
@@ -35,17 +35,16 @@ class CommentsService {
       };
     }
 
-    const newEntity: CommentDb = {
-      content: dto.content,
-      postId: postId,
-      commentatorInfo: {
+    const newEntity = new CommentDb(
+      dto.content,
+      {
         userId: userId,
         userLogin: userEntity.login,
       },
-      createdAt: new Date().toISOString(),
-    };
+      postId,
+    );
 
-    const commentId = await commentsRepository.create(newEntity);
+    const commentId = await commentsRepositoryInstance.create(newEntity);
 
     return {
       status: ResultStatus.Success,
@@ -59,7 +58,7 @@ class CommentsService {
     id: string,
     dto: CommentInput,
   ): Promise<Result<true>> {
-    const updatedEntity = await commentsRepository.findOneById(id);
+    const updatedEntity = await commentsRepositoryInstance.findOneById(id);
 
     if (!updatedEntity) {
       return {
@@ -79,7 +78,7 @@ class CommentsService {
       };
     }
 
-    const isUpdated = await commentsRepository.updateById(id, dto);
+    const isUpdated = await commentsRepositoryInstance.updateById(id, dto);
 
     if (!isUpdated) {
       return {
@@ -98,7 +97,7 @@ class CommentsService {
   }
 
   async deleteOneById(userId: string, id: string): Promise<Result<true>> {
-    const deletedEntity = await commentsRepository.findOneById(id);
+    const deletedEntity = await commentsRepositoryInstance.findOneById(id);
 
     if (!deletedEntity) {
       return {
@@ -118,7 +117,7 @@ class CommentsService {
       };
     }
 
-    const isDeleted = await commentsRepository.deleteOneById(id);
+    const isDeleted = await commentsRepositoryInstance.deleteOneById(id);
 
     if (!isDeleted) {
       return {

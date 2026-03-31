@@ -3,12 +3,12 @@ import { commentsCollection } from "../../../db/mongo";
 import type { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
 
-export const commentsRepository = {
+class CommentsRepository {
   async create(dto: CommentDb): Promise<string> {
     const result = await commentsCollection.insertOne(dto);
 
     return result.insertedId.toString();
-  },
+  }
 
   async updateById(id: string, dto: CommentInput): Promise<boolean> {
     const updateResult = await commentsCollection.updateOne(
@@ -25,7 +25,7 @@ export const commentsRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteOneById(id: string): Promise<boolean> {
     const deleteResult = await commentsCollection.deleteOne({
@@ -37,7 +37,7 @@ export const commentsRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteByPostId(blogId: string): Promise<void> {
     const deleteResult = await commentsCollection.deleteMany({
@@ -49,7 +49,7 @@ export const commentsRepository = {
     }
 
     return;
-  },
+  }
 
   async findOneById(id: string): Promise<CommentDb | null> {
     const item = await commentsCollection.findOne({ _id: new ObjectId(id) });
@@ -59,5 +59,7 @@ export const commentsRepository = {
     }
 
     return item;
-  },
-};
+  }
+}
+
+export const commentsRepositoryInstance = new CommentsRepository();

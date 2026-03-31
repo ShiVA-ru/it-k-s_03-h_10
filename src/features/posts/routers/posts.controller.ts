@@ -13,7 +13,7 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
 import { commentsServiceInstance } from "../../comments/application/comments.service";
-import { commentsQueryRepository } from "../../comments/repositories/comments.query.repository";
+import { commentsQueryRepositoryInstance } from "../../comments/repositories/comments.query.repository";
 import type { CommentInput } from "../../comments/types/comments.input.type";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type";
 import type { CommentView } from "../../comments/types/comments.view.type";
@@ -77,10 +77,8 @@ class PostsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const commentsListOutput = await commentsQueryRepository.findByPostId(
-        postId,
-        queryData,
-      );
+      const commentsListOutput =
+        await commentsQueryRepositoryInstance.findByPostId(postId, queryData);
 
       return res.status(HttpStatus.Ok).json(commentsListOutput);
     } catch (error) {
@@ -141,7 +139,7 @@ class PostsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const createdEntity = await commentsQueryRepository.findOneById(
+      const createdEntity = await commentsQueryRepositoryInstance.findOneById(
         createResult.data.id,
       );
 

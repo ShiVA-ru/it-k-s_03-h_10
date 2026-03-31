@@ -1,8 +1,13 @@
 import type { CommentatorInfoType } from "./comments.commentator-info.type";
 
-export type CommentDb = {
-  content: string;
-  commentatorInfo: CommentatorInfoType;
-  postId: string;
-  createdAt?: string;
-};
+export class CommentDb {
+  public createdAt: string;
+
+  constructor(
+    public content: string,
+    public commentatorInfo: CommentatorInfoType,
+    public postId: string,
+  ) {
+    this.createdAt = new Date().toISOString();
+  }
+}

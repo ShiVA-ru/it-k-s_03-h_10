@@ -7,7 +7,7 @@ import type { CommentView } from "../types/comments.view.type";
 import { mapCommentsToPaginatedView } from "./mappers/comments.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/comments.entity-map";
 
-export const commentsQueryRepository = {
+class CommentsQueryRepository {
   async findAll(queryDto: CommentsQueryInput): Promise<Paginator<CommentView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const filter = {};
@@ -28,7 +28,7 @@ export const commentsQueryRepository = {
     });
 
     return commentsListOutput;
-  },
+  }
 
   async findOneById(id: string): Promise<CommentView | null> {
     const item = await commentsCollection.findOne({ _id: new ObjectId(id) });
@@ -38,7 +38,7 @@ export const commentsQueryRepository = {
     }
 
     return mapEntityToViewModel(item);
-  },
+  }
 
   async findByPostId(
     postId: string,
@@ -64,5 +64,7 @@ export const commentsQueryRepository = {
     });
 
     return postsListOutput;
-  },
-};
+  }
+}
+
+export const commentsQueryRepositoryInstance = new CommentsQueryRepository();
