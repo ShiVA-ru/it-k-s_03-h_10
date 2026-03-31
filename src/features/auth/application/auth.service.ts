@@ -3,7 +3,7 @@ import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
 import { deviceServiceInstance } from "../../devices/application/devices.service";
-import { devicesRepository } from "../../devices/repositories/devices.repository";
+import { devicesRepositoryInstance } from "../../devices/repositories/devices.repository";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import type { UserView } from "../../users/types/users.view.type";
@@ -80,7 +80,10 @@ export const authService = {
     deviceId: string,
   ): Promise<Result<true | null>> {
     try {
-      const isDeleted = await devicesRepository.deleteOneById(deviceId, userId);
+      const isDeleted = await devicesRepositoryInstance.deleteOneById(
+        deviceId,
+        userId,
+      );
 
       if (!isDeleted) {
         return {
@@ -158,7 +161,7 @@ export const authService = {
       };
     }
 
-    const isUpdated = await devicesRepository.update(deviceId, now);
+    const isUpdated = await devicesRepositoryInstance.update(deviceId, now);
 
     if (!isUpdated) {
       return {

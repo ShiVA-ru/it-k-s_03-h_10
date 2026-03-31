@@ -2,12 +2,12 @@ import type { WithId } from "mongodb";
 import { devicesCollection } from "../../../db/mongo";
 import type { DeviceDb } from "../types/devices.db.type";
 
-export const devicesRepository = {
+class DevicesRepository {
   async create(dto: DeviceDb): Promise<string> {
     const result = await devicesCollection.insertOne(dto);
 
     return result.insertedId.toString();
-  },
+  }
 
   async update(deviceId: string, iat: number): Promise<boolean> {
     const updateResult = await devicesCollection.updateOne(
@@ -24,7 +24,7 @@ export const devicesRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteOther(userId: string, currentdeviceId: string): Promise<boolean> {
     const deleteResult = await devicesCollection.deleteMany({
@@ -37,7 +37,7 @@ export const devicesRepository = {
     }
 
     return true;
-  },
+  }
 
   async deleteOneById(deviceId: string, userId: string): Promise<boolean> {
     const deleteResult = await devicesCollection.deleteOne({
@@ -50,7 +50,7 @@ export const devicesRepository = {
     }
 
     return true;
-  },
+  }
 
   async findOneById(
     deviceId: string,
@@ -63,7 +63,7 @@ export const devicesRepository = {
     }
 
     return item;
-  },
+  }
 
   async findByDeviceId(deviceId: string): Promise<WithId<DeviceDb> | null> {
     const item = await devicesCollection.findOne({ deviceId });
@@ -73,5 +73,7 @@ export const devicesRepository = {
     }
 
     return item;
-  },
-};
+  }
+}
+
+export const devicesRepositoryInstance = new DevicesRepository();

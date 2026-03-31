@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { devicesRepository } from "../repositories/devices.repository";
+import { devicesRepositoryInstance } from "../repositories/devices.repository";
 import { DeviceDb } from "../types/devices.db.type";
 
 class DeviceService {
@@ -20,7 +20,7 @@ class DeviceService {
       userId,
     );
 
-    const insertedId = await devicesRepository.create(newEntity);
+    const insertedId = await devicesRepositoryInstance.create(newEntity);
 
     if (!insertedId) {
       return {
@@ -39,19 +39,19 @@ class DeviceService {
   }
 
   async findById(deviceId: string, iat: number): Promise<DeviceDb | null> {
-    return await devicesRepository.findOneById(deviceId, iat);
+    return await devicesRepositoryInstance.findOneById(deviceId, iat);
   }
 
   async findByDeviceId(deviceId: string): Promise<DeviceDb | null> {
-    return await devicesRepository.findByDeviceId(deviceId);
+    return await devicesRepositoryInstance.findByDeviceId(deviceId);
   }
 
   async deleteOneById(deviceId: string, userId: string): Promise<boolean> {
-    return await devicesRepository.deleteOneById(deviceId, userId);
+    return await devicesRepositoryInstance.deleteOneById(deviceId, userId);
   }
 
   async deleteOther(userId: string, deviceId: string): Promise<boolean> {
-    return await devicesRepository.deleteOther(userId, deviceId);
+    return await devicesRepositoryInstance.deleteOther(userId, deviceId);
   }
 }
 
