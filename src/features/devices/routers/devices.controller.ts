@@ -6,18 +6,15 @@ import type {
   RequestWithUserId,
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
-import { DeviceService } from "../application/devices.service";
-import { DevicesQueryRepository } from "../repositories/devices.query.repository";
+import type { DevicesService } from "../application/devices.service";
+import type { DevicesQueryRepository } from "../repositories/devices.query.repository";
 import type { DeviceView } from "../types/devices.view.type";
 
-class DeviceController {
-  private devicesQueryRepository: DevicesQueryRepository;
-  private deviceService: DeviceService;
-
-  constructor() {
-    this.devicesQueryRepository = new DevicesQueryRepository();
-    this.deviceService = new DeviceService();
-  }
+export class DevicesController {
+  constructor(
+    protected devicesQueryRepository: DevicesQueryRepository,
+    protected devicesService: DevicesService,
+  ) {}
 
   async getUserActiveSessions(
     req: RequestWithUserId<IdType>,
@@ -49,7 +46,7 @@ class DeviceController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const isDeleted = await this.deviceService.deleteOther(userId, deviceId);
+      const isDeleted = await this.devicesService.deleteOther(userId, deviceId);
 
       if (!isDeleted) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -70,7 +67,7 @@ class DeviceController {
       const deviceId = req.params.id;
       const userId = req.refreshTokenPayload.userId;
 
-      const findEntity = await this.deviceService.findByDeviceId(deviceId);
+      const findEntity = await this.devicesService.findByDeviceId(deviceId);
 
       if (!userId || !findEntity) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -80,7 +77,7 @@ class DeviceController {
         return res.sendStatus(HttpStatus.Forbidden);
       }
 
-      const isDeleted = await this.deviceService.deleteOneById(
+      const isDeleted = await this.devicesService.deleteOneById(
         req.params.id,
         userId,
       );
@@ -96,5 +93,3 @@ class DeviceController {
     }
   }
 }
-
-export const deviceControllerInstance = new DeviceController();

@@ -1,16 +1,13 @@
-import { BlogsRepository } from "../../blogs/repositories/blogs.repository";
-import { PostsRepository } from "../repositories/posts.repository";
+import type { BlogsRepository } from "../../blogs/repositories/blogs.repository";
+import type { PostsRepository } from "../repositories/posts.repository";
 import { PostDb } from "../types/posts.db.type";
 import type { PostInput } from "../types/posts.input.type";
 
 export class PostsService {
-  private postsRepository: PostsRepository;
-  private blogsRepository: BlogsRepository;
-
-  constructor() {
-    this.postsRepository = new PostsRepository();
-    this.blogsRepository = new BlogsRepository();
-  }
+  constructor(
+    protected postsRepository: PostsRepository,
+    protected blogsRepository: BlogsRepository,
+  ) {}
 
   async create(dto: PostInput): Promise<string | null> {
     const blogEntity = await this.blogsRepository.findOneById(dto.blogId);

@@ -1,9 +1,9 @@
 import { Router } from "express";
+import { commentsController } from "../../../composition-root";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
 import { accessTokenGuardMiddleware } from "../../auth/middlewares/access-token.guard";
 import { commentInputDtoValidation } from "../validation/comments.input-dto.validation.middleware";
-import { commentsControllerInstance } from "./comments.controller";
 
 export const commentsRouter = Router();
 
@@ -12,7 +12,7 @@ commentsRouter
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.getComment.bind(commentsControllerInstance),
+    commentsController.getComment.bind(commentsController),
   )
   //UPDATE
   .put(
@@ -21,7 +21,7 @@ commentsRouter
     idValidation,
     commentInputDtoValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.updateComment.bind(commentsControllerInstance),
+    commentsController.updateComment.bind(commentsController),
   )
   // DELETE
   .delete(
@@ -29,5 +29,5 @@ commentsRouter
     accessTokenGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.deleteComment.bind(commentsControllerInstance),
+    commentsController.deleteComment.bind(commentsController),
   );

@@ -12,29 +12,24 @@ import type {
   RequestWithParamsAndBody,
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
-import { PostsService } from "../../posts/application/posts.service";
-import { PostsQueryRepository } from "../../posts/repositories/posts.query.repository";
+import type { PostsService } from "../../posts/application/posts.service";
+import type { PostsQueryRepository } from "../../posts/repositories/posts.query.repository";
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type";
 import type { PostView } from "../../posts/types/posts.view.type";
-import { BlogsService } from "../application/blogs.service";
-import { BlogsQueryRepository } from "../repositories/blogs.query.repository";
+import type { BlogsService } from "../application/blogs.service";
+import type { BlogsQueryRepository } from "../repositories/blogs.query.repository";
 import type { BlogInput } from "../types/blogs.input.type";
 import type { BlogsQueryInput } from "../types/blogs.query.type";
 import type { BlogView } from "../types/blogs.view.type";
 
-class BlogsController {
-  private postsQueryRepository: PostsQueryRepository;
-  private blogsQueryRepository: BlogsQueryRepository;
-  private postsService: PostsService;
-  private blogsService: BlogsService;
-
-  constructor() {
-    this.postsQueryRepository = new PostsQueryRepository();
-    this.blogsQueryRepository = new BlogsQueryRepository();
-    this.postsService = new PostsService();
-    this.blogsService = new BlogsService();
-  }
+export class BlogsController {
+  constructor(
+    protected postsQueryRepository: PostsQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
+    protected postsService: PostsService,
+    protected blogsService: BlogsService,
+  ) {}
 
   async getBlog(
     req: RequestWithParams<URIParamsId>,
@@ -190,5 +185,3 @@ class BlogsController {
     }
   }
 }
-
-export const blogsControllerInstance = new BlogsController();

@@ -2,15 +2,11 @@ import dayjs from "dayjs";
 import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { DevicesRepository } from "../repositories/devices.repository";
+import type { DevicesRepository } from "../repositories/devices.repository";
 import { DeviceDb } from "../types/devices.db.type";
 
-export class DeviceService {
-  private devicesRepository: DevicesRepository;
-
-  constructor() {
-    this.devicesRepository = new DevicesRepository();
-  }
+export class DevicesService {
+  constructor(protected devicesRepository: DevicesRepository) {}
 
   async create(
     dto: DeviceMeta & { userId: string },

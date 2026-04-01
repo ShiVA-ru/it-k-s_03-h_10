@@ -1,22 +1,18 @@
 import type { IdType } from "../../../core/types/id.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { PostsRepository } from "../../posts/repositories/posts.repository";
-import { UsersRepository } from "../../users/repositories/users.repository";
-import { CommentsRepository } from "../repositories/comments.repository";
+import type { PostsRepository } from "../../posts/repositories/posts.repository";
+import type { UsersRepository } from "../../users/repositories/users.repository";
+import type { CommentsRepository } from "../repositories/comments.repository";
 import { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
 
 export class CommentsService {
-  private commentsRepository: CommentsRepository;
-  private postsRepository: PostsRepository;
-  private usersRepository: UsersRepository;
-
-  constructor() {
-    this.commentsRepository = new CommentsRepository();
-    this.postsRepository = new PostsRepository();
-    this.usersRepository = new UsersRepository();
-  }
+  constructor(
+    protected commentsRepository: CommentsRepository,
+    protected postsRepository: PostsRepository,
+    protected usersRepository: UsersRepository,
+  ) {}
 
   async create(
     userId: string,

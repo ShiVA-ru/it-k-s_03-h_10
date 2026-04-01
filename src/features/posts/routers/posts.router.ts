@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { postsController } from "../../../composition-root";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
 import { accessTokenGuardMiddleware } from "../../auth/middlewares/access-token.guard";
@@ -6,7 +7,6 @@ import { superAdminGuardMiddleware } from "../../auth/middlewares/super-admin.gu
 import { commentInputDtoValidation } from "../../comments/validation/comments.input-dto.validation.middleware";
 import { postInputDtoValidation } from "../validation/posts.input-dto.validation.middleware";
 import { paginationSortingValidation } from "../validation/posts.query.validation.middleware";
-import { postsControllerInstance } from "./posts.controller";
 
 export const postsRouter = Router();
 
@@ -19,21 +19,21 @@ postsRouter
     superAdminGuardMiddleware,
     postInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.createPost.bind(postsControllerInstance),
+    postsController.createPost.bind(postsController),
   )
   //READ
   .get(
     "/",
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPosts.bind(postsControllerInstance),
+    postsController.getPosts.bind(postsController),
   )
 
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPost.bind(postsControllerInstance),
+    postsController.getPost.bind(postsController),
   )
   //UPDATE
   .put(
@@ -42,7 +42,7 @@ postsRouter
     idValidation,
     postInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.updatePost.bind(postsControllerInstance),
+    postsController.updatePost.bind(postsController),
   )
   //DELETE
   .delete(
@@ -50,14 +50,14 @@ postsRouter
     superAdminGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.deletePost.bind(postsControllerInstance),
+    postsController.deletePost.bind(postsController),
   )
   .get(
     "/:id/comments",
     idValidation,
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPostComments.bind(postsControllerInstance),
+    postsController.getPostComments.bind(postsController),
   )
   //TODO add validation for dto
   .post(
@@ -66,5 +66,5 @@ postsRouter
     idValidation,
     commentInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.createPostComment.bind(postsControllerInstance),
+    postsController.createPostComment.bind(postsController),
   );

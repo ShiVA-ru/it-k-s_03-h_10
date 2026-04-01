@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { blogsController } from "../../../composition-root";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
 import { superAdminGuardMiddleware } from "../../auth/middlewares/super-admin.guard";
@@ -6,7 +7,6 @@ import { blogPostInputDtoValidation } from "../../posts/validation/posts.input-d
 import { paginationSortingValidation } from "../../posts/validation/posts.query.validation.middleware";
 import { blogInputDtoValidation } from "../validation/blogs.input-dto.validation.middleware";
 import { paginationSortingSearchValidation } from "../validation/blogs.query.validation.middleware";
-import { blogsControllerInstance } from "./blogs.controller";
 
 export const blogsRouter = Router();
 
@@ -16,21 +16,21 @@ blogsRouter
     superAdminGuardMiddleware,
     blogInputDtoValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.createBlog.bind(blogsControllerInstance),
+    blogsController.createBlog.bind(blogsController),
   )
 
   .get(
     "/",
     paginationSortingSearchValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.getBlogs.bind(blogsControllerInstance),
+    blogsController.getBlogs.bind(blogsController),
   )
 
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.getBlog.bind(blogsControllerInstance),
+    blogsController.getBlog.bind(blogsController),
   )
 
   .put(
@@ -39,7 +39,7 @@ blogsRouter
     idValidation,
     blogInputDtoValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.updateBlog.bind(blogsControllerInstance),
+    blogsController.updateBlog.bind(blogsController),
   )
 
   .delete(
@@ -47,14 +47,14 @@ blogsRouter
     superAdminGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.deleteBlog.bind(blogsControllerInstance),
+    blogsController.deleteBlog.bind(blogsController),
   )
 
   .get(
     "/:id/posts",
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.getBlogsPosts.bind(blogsControllerInstance),
+    blogsController.getBlogsPosts.bind(blogsController),
   )
 
   .post(
@@ -63,5 +63,5 @@ blogsRouter
     idValidation,
     blogPostInputDtoValidation,
     inputValidationResultMiddleware,
-    blogsControllerInstance.createBlogPost.bind(blogsControllerInstance),
+    blogsController.createBlogPost.bind(blogsController),
   );

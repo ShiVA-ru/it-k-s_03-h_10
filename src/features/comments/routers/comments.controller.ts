@@ -9,19 +9,16 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { CommentsService } from "../application/comments.service";
-import { CommentsQueryRepository } from "../repositories/comments.query.repository";
+import type { CommentsService } from "../application/comments.service";
+import type { CommentsQueryRepository } from "../repositories/comments.query.repository";
 import type { CommentInput } from "../types/comments.input.type";
 import type { CommentView } from "../types/comments.view.type";
 
-class CommentsController {
-  private commentsService: CommentsService;
-  private commentsQueryRepository: CommentsQueryRepository;
-
-  constructor() {
-    this.commentsService = new CommentsService();
-    this.commentsQueryRepository = new CommentsQueryRepository();
-  }
+export class CommentsController {
+  constructor(
+    protected commentsService: CommentsService,
+    protected commentsQueryRepository: CommentsQueryRepository,
+  ) {}
   async getComment(
     req: RequestWithParams<URIParamsId>,
     res: Response<CommentView>,
@@ -109,5 +106,3 @@ class CommentsController {
     }
   }
 }
-
-export const commentsControllerInstance = new CommentsController();

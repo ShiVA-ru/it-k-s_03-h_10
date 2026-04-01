@@ -12,32 +12,26 @@ import type {
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { CommentsService } from "../../comments/application/comments.service";
-import { CommentsQueryRepository } from "../../comments/repositories/comments.query.repository";
+import type { CommentsService } from "../../comments/application/comments.service";
+import type { CommentsQueryRepository } from "../../comments/repositories/comments.query.repository";
 import type { CommentInput } from "../../comments/types/comments.input.type";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type";
 import type { CommentView } from "../../comments/types/comments.view.type";
-import { PostsService } from "../application/posts.service";
-import { PostsQueryRepository } from "../repositories/posts.query.repository";
-import { PostsRepository } from "../repositories/posts.repository";
+import type { PostsService } from "../application/posts.service";
+import type { PostsQueryRepository } from "../repositories/posts.query.repository";
+import type { PostsRepository } from "../repositories/posts.repository";
 import type { PostInput } from "../types/posts.input.type";
 import type { PostsQueryInput } from "../types/posts.query.type";
 import type { PostView } from "../types/posts.view.type";
 
-class PostsController {
-  private commentsService: CommentsService;
-  private commentsQueryRepository: CommentsQueryRepository;
-  private postsQueryRepository: PostsQueryRepository;
-  private postsRepository: PostsRepository;
-  private postsService: PostsService;
-
-  constructor() {
-    this.commentsService = new CommentsService();
-    this.commentsQueryRepository = new CommentsQueryRepository();
-    this.postsQueryRepository = new PostsQueryRepository();
-    this.postsRepository = new PostsRepository();
-    this.postsService = new PostsService();
-  }
+export class PostsController {
+  constructor(
+    protected commentsService: CommentsService,
+    protected commentsQueryRepository: CommentsQueryRepository,
+    protected postsQueryRepository: PostsQueryRepository,
+    protected postsRepository: PostsRepository,
+    protected postsService: PostsService,
+  ) {}
 
   async getPost(
     req: RequestWithParams<URIParamsId>,
@@ -206,5 +200,3 @@ class PostsController {
     }
   }
 }
-
-export const postsControllerInstance = new PostsController();

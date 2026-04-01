@@ -1,13 +1,9 @@
-import { BlogsRepository } from "../repositories/blogs.repository";
+import type { BlogsRepository } from "../repositories/blogs.repository";
 import { BlogDb } from "../types/blogs.db.type";
 import type { BlogInput } from "../types/blogs.input.type";
 
 export class BlogsService {
-  private blogsRepository: BlogsRepository;
-
-  constructor() {
-    this.blogsRepository = new BlogsRepository();
-  }
+  constructor(protected blogsRepository: BlogsRepository) {}
 
   async create(dto: BlogInput): Promise<string> {
     const newEntity = new BlogDb(dto.name, dto.description, dto.websiteUrl);
