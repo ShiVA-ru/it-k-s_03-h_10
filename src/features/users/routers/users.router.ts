@@ -15,25 +15,25 @@ usersRouter
     "/",
     userInputDtoValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.createUser,
+    usersControllerInstance.createUser.bind(usersControllerInstance),
   )
   .get(
     "/",
     paginationSortingSearchValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.getUsers,
+    usersControllerInstance.getUsers.bind(usersControllerInstance),
   )
 
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.getUser,
+    usersControllerInstance.getUser.bind(usersControllerInstance),
   )
 
   .delete(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.deleteUser,
+    usersControllerInstance.deleteUser.bind(usersControllerInstance),
   );

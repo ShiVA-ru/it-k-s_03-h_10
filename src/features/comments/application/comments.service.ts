@@ -2,7 +2,7 @@ import type { IdType } from "../../../core/types/id.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { PostsRepository } from "../../posts/repositories/posts.repository";
-import { usersRepositoryInstance } from "../../users/repositories/users.repository";
+import { UsersRepository } from "../../users/repositories/users.repository";
 import { CommentsRepository } from "../repositories/comments.repository";
 import { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
@@ -10,10 +10,12 @@ import type { CommentInput } from "../types/comments.input.type";
 export class CommentsService {
   private commentsRepository: CommentsRepository;
   private postsRepository: PostsRepository;
+  private usersRepository: UsersRepository;
 
   constructor() {
     this.commentsRepository = new CommentsRepository();
     this.postsRepository = new PostsRepository();
+    this.usersRepository = new UsersRepository();
   }
 
   async create(
@@ -32,7 +34,7 @@ export class CommentsService {
       };
     }
 
-    const userEntity = await usersRepositoryInstance.findOneById(userId);
+    const userEntity = await this.usersRepository.findOneById(userId);
 
     if (!userEntity) {
       return {

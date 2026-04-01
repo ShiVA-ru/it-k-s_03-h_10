@@ -3,19 +3,26 @@ import dayjs from "dayjs";
 import { emailAdapter } from "../../../adapters/email.adapter";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { usersServiceInstance } from "../../users/application/users.service";
-import { usersRepositoryInstance } from "../../users/repositories/users.repository";
+import { UsersService } from "../../users/application/users.service";
+import { UsersRepository } from "../../users/repositories/users.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
 class RegistrationService {
+  private usersRepository: UsersRepository;
+  private usersService: UsersService;
+
+  constructor() {
+    this.usersRepository = new UsersRepository();
+    this.usersService = new UsersService();
+  }
+
   async registration(dto: UserInput): Promise<Result<true>> {
     const { login, email } = dto;
     console.log(dto);
 
-    const isUserExistByLogin =
-      await usersRepositoryInstance.isExistByLogin(login);
+    const isUserExistByLogin = await this.usersRepository.isExistByLogin(login);
 
     if (isUserExistByLogin) {
       return {
@@ -25,8 +32,7 @@ class RegistrationService {
         extensions: [{ field: "login", message: "Already Registered" }],
       };
     }
-    const isUserExistByEmail =
-      await usersRepositoryInstance.isExistByEmail(email);
+    const isUserExistByEmail = await this.usersRepository.isExistByEmail(email);
 
     if (isUserExistByEmail) {
       return {
@@ -38,7 +44,7 @@ class RegistrationService {
     }
     console.log("user not exist");
 
-    const result = await usersServiceInstance.create(dto);
+    const result = await this.usersService.create(dto);
     console.log("user created", result.data?.insertedId);
 
     if (!result.data) {
@@ -50,7 +56,7 @@ class RegistrationService {
       };
     }
 
-    const createdEntity = await usersRepositoryInstance.findOneById(
+    const createdEntity = await this.usersRepository.findOneById(
       result.data.insertedId,
     );
 
@@ -94,9 +100,7 @@ class RegistrationService {
   }
 
   async confirmEmail(dto: RegistrationConfirmationCode): Promise<Result<true>> {
-    const user = await usersRepositoryInstance.findOneByConfirmationCode(
-      dto.code,
-    );
+    const user = await this.usersRepository.findOneByConfirmationCode(dto.code);
 
     if (!user) {
       return {
@@ -125,8 +129,9 @@ class RegistrationService {
       };
     }
 
-    const updatedResult =
-      await usersRepositoryInstance.updateUserConfirmationData(user._id);
+    const updatedResult = await this.usersRepository.updateUserConfirmationData(
+      user._id,
+    );
 
     if (!updatedResult) {
       return {
@@ -148,7 +153,7 @@ class RegistrationService {
     const { email } = dto;
     console.log(dto);
 
-    const user = await usersRepositoryInstance.isExistByEmail(email);
+    const user = await this.usersRepository.isExistByEmail(email);
 
     if (!user) {
       return {
@@ -185,12 +190,11 @@ class RegistrationService {
         console.error(e);
       });
 
-    const updateResult =
-      await usersRepositoryInstance.updateUserConfirmationCode(
-        user._id,
-        newConfirmationCode,
-        confirmationCodeExpirationDate,
-      );
+    const updateResult = await this.usersRepository.updateUserConfirmationCode(
+      user._id,
+      newConfirmationCode,
+      confirmationCodeExpirationDate,
+    );
 
     if (!updateResult) {
       return {

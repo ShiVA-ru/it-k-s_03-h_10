@@ -13,19 +13,27 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { usersServiceInstance } from "../application/users.service";
-import { usersQueryRepositoryInstance } from "../repositories/users.query.repository";
+import { UsersService } from "../application/users.service";
+import { UsersQueryRepository } from "../repositories/users.query.repository";
 import type { UserInput } from "../types/users.input.type";
 import type { UsersQueryInput } from "../types/users.query.type";
 import type { UserView } from "../types/users.view.type";
 
 class UsersController {
+  private usersQueryRepository: UsersQueryRepository;
+  private usersService: UsersService;
+
+  constructor() {
+    this.usersQueryRepository = new UsersQueryRepository();
+    this.usersService = new UsersService();
+  }
+
   async getUser(
     req: RequestWithParams<URIParamsId>,
     res: Response<UserView | validationErrorsDto>,
   ) {
     try {
-      const findEntity = await usersQueryRepositoryInstance.findOneById(
+      const findEntity = await this.usersQueryRepository.findOneById(
         req.params.id,
       );
 
@@ -47,7 +55,7 @@ class UsersController {
       });
 
       const blogsListOutput =
-        await usersQueryRepositoryInstance.findAll(queryData);
+        await this.usersQueryRepository.findAll(queryData);
 
       res.status(HttpStatus.Ok).json(blogsListOutput);
     } catch (error) {
@@ -61,7 +69,7 @@ class UsersController {
     res: Response<UserView | validationErrorType[]>,
   ) {
     try {
-      const result = await usersServiceInstance.create(req.body, true);
+      const result = await this.usersService.create(req.body, true);
 
       if (!isSuccessResult(result)) {
         return res
@@ -69,7 +77,7 @@ class UsersController {
           .send(result.extensions);
       }
 
-      const createdEntity = await usersQueryRepositoryInstance.findOneById(
+      const createdEntity = await this.usersQueryRepository.findOneById(
         result.data.insertedId,
       );
 
@@ -86,7 +94,7 @@ class UsersController {
 
   async deleteUser(req: RequestWithParams<URIParamsId>, res: Response) {
     try {
-      const isDeleted = await usersServiceInstance.deleteOneById(req.params.id);
+      const isDeleted = await this.usersService.deleteOneById(req.params.id);
 
       if (!isDeleted) {
         res.sendStatus(HttpStatus.NotFound);

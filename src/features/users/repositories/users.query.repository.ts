@@ -8,7 +8,7 @@ import type { UserView } from "../types/users.view.type";
 import { mapUsersToPaginatedView } from "./mappers/users.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/users.entity-map";
 
-class UsersQueryRepository {
+export class UsersQueryRepository {
   async findAll(queryDto: UsersQueryInput): Promise<Paginator<UserView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const searchConditions = [];
@@ -68,5 +68,3 @@ class UsersQueryRepository {
     };
   }
 }
-
-export const usersQueryRepositoryInstance = new UsersQueryRepository();

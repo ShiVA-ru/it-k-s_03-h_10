@@ -10,7 +10,7 @@ import type {
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
 import { DeviceService } from "../../devices/application/devices.service";
-import { usersQueryRepositoryInstance } from "../../users/repositories/users.query.repository";
+import { UsersQueryRepository } from "../../users/repositories/users.query.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import { registrationServiceInstance } from "../application/auth.registration.service";
 import { authServiceInstance } from "../application/auth.service";
@@ -21,9 +21,11 @@ import type { RegistrationEmailResending } from "../types/registration-resending
 
 class AuthController {
   private deviceService: DeviceService;
+  private usersQueryRepository: UsersQueryRepository;
 
   constructor() {
     this.deviceService = new DeviceService();
+    this.usersQueryRepository = new UsersQueryRepository();
   }
 
   async login(req: RequestWithBody<LoginInput>, res: Response) {
@@ -128,7 +130,7 @@ class AuthController {
         return;
       }
 
-      const findEntity = await usersQueryRepositoryInstance.findMeById(userId);
+      const findEntity = await this.usersQueryRepository.findMeById(userId);
 
       if (!findEntity) {
         return res.sendStatus(HttpStatus.NotFound);
