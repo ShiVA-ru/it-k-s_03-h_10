@@ -9,7 +9,7 @@ import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
-class RegistrationService {
+export class RegistrationService {
   private usersRepository: UsersRepository;
   private usersService: UsersService;
 
@@ -212,5 +212,3 @@ class RegistrationService {
     };
   }
 }
-
-export const registrationServiceInstance = new RegistrationService();

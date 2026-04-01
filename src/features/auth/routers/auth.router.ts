@@ -19,24 +19,32 @@ authRouter
     loginInputDtoValidation,
     inputValidationResultMiddleware,
     deviceMetaMiddleware,
-    authControllerInstance.login,
+    authControllerInstance.login.bind(authControllerInstance),
   )
-  .post("/logout", refreshTokenGuardMiddleware, authControllerInstance.logout)
+  .post(
+    "/logout",
+    refreshTokenGuardMiddleware,
+    authControllerInstance.logout.bind(authControllerInstance),
+  )
 
   .post(
     "/refresh-token",
     refreshTokenGuardMiddleware,
-    authControllerInstance.refreshToken,
+    authControllerInstance.refreshToken.bind(authControllerInstance),
   )
 
-  .get("/me", accessTokenGuardMiddleware, authControllerInstance.getMe)
+  .get(
+    "/me",
+    accessTokenGuardMiddleware,
+    authControllerInstance.getMe.bind(authControllerInstance),
+  )
 
   .post(
     "/registration",
     rateLimitGuardMiddleware,
     userInputDtoValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registration,
+    authControllerInstance.registration.bind(authControllerInstance),
   )
 
   .post(
@@ -44,7 +52,9 @@ authRouter
     rateLimitGuardMiddleware,
     confirmationCodeValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registrationConfirmation,
+    authControllerInstance.registrationConfirmation.bind(
+      authControllerInstance,
+    ),
   )
 
   .post(
@@ -52,5 +62,7 @@ authRouter
     rateLimitGuardMiddleware,
     emailValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registrationEmailResending,
+    authControllerInstance.registrationEmailResending.bind(
+      authControllerInstance,
+    ),
   );

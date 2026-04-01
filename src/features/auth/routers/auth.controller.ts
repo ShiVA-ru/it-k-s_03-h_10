@@ -12,20 +12,24 @@ import { isSuccessResult } from "../../../core/utils/type-guards";
 import { DeviceService } from "../../devices/application/devices.service";
 import { UsersQueryRepository } from "../../users/repositories/users.query.repository";
 import type { UserInput } from "../../users/types/users.input.type";
-import { registrationServiceInstance } from "../application/auth.registration.service";
-import { authServiceInstance } from "../application/auth.service";
+import { RegistrationService } from "../application/auth.registration.service";
+import { AuthService } from "../application/auth.service";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { LoginInput } from "../types/login.input.type";
 import type { MeView } from "../types/me.view.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
 class AuthController {
-  private deviceService: DeviceService;
   private usersQueryRepository: UsersQueryRepository;
+  private deviceService: DeviceService;
+  private registrationService: RegistrationService;
+  private authService: AuthService;
 
   constructor() {
-    this.deviceService = new DeviceService();
     this.usersQueryRepository = new UsersQueryRepository();
+    this.deviceService = new DeviceService();
+    this.registrationService = new RegistrationService();
+    this.authService = new AuthService();
   }
 
   async login(req: RequestWithBody<LoginInput>, res: Response) {
@@ -33,7 +37,7 @@ class AuthController {
       const { loginOrEmail, password } = req.body;
       console.log("req.deviceMeta", req.deviceMeta);
 
-      const result = await authServiceInstance.loginUser(
+      const result = await this.authService.loginUser(
         loginOrEmail,
         password,
         req.deviceMeta,
@@ -69,7 +73,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const result = await authServiceInstance.logoutByDevice(userId, deviceId);
+      const result = await this.authService.logoutByDevice(userId, deviceId);
 
       if (!isSuccessResult(result)) {
         return res.sendStatus(HttpStatus.Unauthorized);
@@ -98,7 +102,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const result = await authServiceInstance.updateTokens(userId, deviceId);
+      const result = await this.authService.updateTokens(userId, deviceId);
 
       if (!isSuccessResult(result)) {
         return res.sendStatus(HttpStatus.Unauthorized);
@@ -145,7 +149,7 @@ class AuthController {
 
   async registration(req: RequestWithBody<UserInput>, res: Response) {
     try {
-      const result = await registrationServiceInstance.registration(req.body);
+      const result = await this.registrationService.registration(req.body);
       console.log("result", result);
 
       if (!isSuccessResult(result)) {
@@ -166,7 +170,7 @@ class AuthController {
     res: Response,
   ) {
     try {
-      const result = await registrationServiceInstance.confirmEmail(req.body);
+      const result = await this.registrationService.confirmEmail(req.body);
 
       if (!isSuccessResult(result)) {
         return res
@@ -187,7 +191,7 @@ class AuthController {
   ) {
     try {
       console.log('POST -> "auth/registration-email-resending', req.body);
-      const result = await registrationServiceInstance.emailResending(req.body);
+      const result = await this.registrationService.emailResending(req.body);
 
       if (!isSuccessResult(result)) {
         console.log('POST -> "auth/registration-email-resending error', result);

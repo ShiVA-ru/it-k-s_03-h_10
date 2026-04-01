@@ -11,7 +11,7 @@ import type { TokenPair } from "../types/token-pair.type";
 import { bcryptService } from "./bcrypt.service";
 import { jwtService } from "./jwt.service";
 
-class AuthService {
+export class AuthService {
   private devicesRepository: DevicesRepository;
   private usersRepository: UsersRepository;
   private deviceService: DeviceService;
@@ -193,5 +193,3 @@ class AuthService {
     };
   }
 }
-
-export const authServiceInstance = new AuthService();
