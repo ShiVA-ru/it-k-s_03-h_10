@@ -19,21 +19,21 @@ postsRouter
     superAdminGuardMiddleware,
     postInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.createPost,
+    postsControllerInstance.createPost.bind(postsControllerInstance),
   )
   //READ
   .get(
     "/",
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPosts,
+    postsControllerInstance.getPosts.bind(postsControllerInstance),
   )
 
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPost,
+    postsControllerInstance.getPost.bind(postsControllerInstance),
   )
   //UPDATE
   .put(
@@ -42,7 +42,7 @@ postsRouter
     idValidation,
     postInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.updatePost,
+    postsControllerInstance.updatePost.bind(postsControllerInstance),
   )
   //DELETE
   .delete(
@@ -50,14 +50,14 @@ postsRouter
     superAdminGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.deletePost,
+    postsControllerInstance.deletePost.bind(postsControllerInstance),
   )
   .get(
     "/:id/comments",
     idValidation,
     paginationSortingValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.getPostComments,
+    postsControllerInstance.getPostComments.bind(postsControllerInstance),
   )
   //TODO add validation for dto
   .post(
@@ -66,5 +66,5 @@ postsRouter
     idValidation,
     commentInputDtoValidation,
     inputValidationResultMiddleware,
-    postsControllerInstance.createPostComment,
+    postsControllerInstance.createPostComment.bind(postsControllerInstance),
   );

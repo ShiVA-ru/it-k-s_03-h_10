@@ -7,7 +7,7 @@ import type { PostView } from "../types/posts.view.type";
 import { mapPostsToPaginatedView } from "./mappers/posts.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/posts.entity-map";
 
-class PostsQueryRepository {
+export class PostsQueryRepository {
   async findAll(queryDto: PostsQueryInput): Promise<Paginator<PostView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const filter = {};
@@ -66,5 +66,3 @@ class PostsQueryRepository {
     return postsListOutput;
   }
 }
-
-export const postsQueryRepositoryInstance = new PostsQueryRepository();

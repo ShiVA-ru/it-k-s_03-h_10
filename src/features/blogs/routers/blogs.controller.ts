@@ -12,8 +12,8 @@ import type {
   RequestWithParamsAndBody,
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
-import { postsServiceInstance } from "../../posts/application/posts.service";
-import { postsQueryRepositoryInstance } from "../../posts/repositories/posts.query.repository";
+import { PostsService } from "../../posts/application/posts.service";
+import { PostsQueryRepository } from "../../posts/repositories/posts.query.repository";
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type";
 import type { PostView } from "../../posts/types/posts.view.type";
@@ -24,6 +24,14 @@ import type { BlogsQueryInput } from "../types/blogs.query.type";
 import type { BlogView } from "../types/blogs.view.type";
 
 class BlogsController {
+  private postsQueryRepository: PostsQueryRepository;
+  private postsService: PostsService;
+
+  constructor() {
+    this.postsQueryRepository = new PostsQueryRepository();
+    this.postsService = new PostsService();
+  }
+
   async getBlog(
     req: RequestWithParams<URIParamsId>,
     res: Response<BlogView | validationErrorsDto>,
@@ -72,7 +80,7 @@ class BlogsController {
         locations: ["query"],
       });
 
-      const postsListOutput = await postsQueryRepositoryInstance.findByBlogId(
+      const postsListOutput = await this.postsQueryRepository.findByBlogId(
         blogId,
         queryData,
       );
@@ -115,7 +123,7 @@ class BlogsController {
   ) {
     try {
       const blogId = req.params.id;
-      const insertedId = await postsServiceInstance.create({
+      const insertedId = await this.postsService.create({
         blogId,
         title: req.body.title,
         shortDescription: req.body.shortDescription,
@@ -127,7 +135,7 @@ class BlogsController {
       }
 
       const createdEntity =
-        await postsQueryRepositoryInstance.findOneById(insertedId);
+        await this.postsQueryRepository.findOneById(insertedId);
 
       if (!createdEntity) {
         return res.sendStatus(HttpStatus.NotFound);

@@ -2,7 +2,7 @@ import { ObjectId, type WithId } from "mongodb";
 import { postsCollection } from "../../../db/mongo";
 import type { PostDb } from "../types/posts.db.type";
 
-class PostsRepository {
+export class PostsRepository {
   async create(dto: PostDb): Promise<string> {
     const result = await postsCollection.insertOne(dto);
 
@@ -67,5 +67,3 @@ class PostsRepository {
     return item;
   }
 }
-
-export const postsRepositoryInstance = new PostsRepository();

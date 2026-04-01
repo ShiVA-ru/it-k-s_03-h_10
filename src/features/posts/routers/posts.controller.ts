@@ -17,9 +17,9 @@ import { CommentsQueryRepository } from "../../comments/repositories/comments.qu
 import type { CommentInput } from "../../comments/types/comments.input.type";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type";
 import type { CommentView } from "../../comments/types/comments.view.type";
-import { postsServiceInstance } from "../application/posts.service";
-import { postsQueryRepositoryInstance } from "../repositories/posts.query.repository";
-import { postsRepositoryInstance } from "../repositories/posts.repository";
+import { PostsService } from "../application/posts.service";
+import { PostsQueryRepository } from "../repositories/posts.query.repository";
+import { PostsRepository } from "../repositories/posts.repository";
 import type { PostInput } from "../types/posts.input.type";
 import type { PostsQueryInput } from "../types/posts.query.type";
 import type { PostView } from "../types/posts.view.type";
@@ -27,17 +27,24 @@ import type { PostView } from "../types/posts.view.type";
 class PostsController {
   private commentsService: CommentsService;
   private commentsQueryRepository: CommentsQueryRepository;
+  private postsQueryRepository: PostsQueryRepository;
+  private postsRepository: PostsRepository;
+  private postsService: PostsService;
 
   constructor() {
     this.commentsService = new CommentsService();
     this.commentsQueryRepository = new CommentsQueryRepository();
+    this.postsQueryRepository = new PostsQueryRepository();
+    this.postsRepository = new PostsRepository();
+    this.postsService = new PostsService();
   }
+
   async getPost(
     req: RequestWithParams<URIParamsId>,
     res: Response<PostView | validationErrorsDto>,
   ) {
     try {
-      const findEntity = await postsQueryRepositoryInstance.findOneById(
+      const findEntity = await this.postsQueryRepository.findOneById(
         req.params.id,
       );
 
@@ -59,7 +66,7 @@ class PostsController {
       });
 
       const postsListOutput =
-        await postsQueryRepositoryInstance.findAll(queryData);
+        await this.postsQueryRepository.findAll(queryData);
 
       res.status(HttpStatus.Ok).json(postsListOutput);
     } catch (error) {
@@ -78,7 +85,7 @@ class PostsController {
         locations: ["query"],
       });
 
-      const queryPost = await postsRepositoryInstance.findOneById(postId);
+      const queryPost = await this.postsRepository.findOneById(postId);
 
       if (!queryPost) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -99,14 +106,14 @@ class PostsController {
     res: Response<PostView | validationErrorsDto>,
   ) {
     try {
-      const insertedId = await postsServiceInstance.create(req.body);
+      const insertedId = await this.postsService.create(req.body);
 
       if (!insertedId) {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
       const createdEntity =
-        await postsQueryRepositoryInstance.findOneById(insertedId);
+        await this.postsQueryRepository.findOneById(insertedId);
 
       if (!createdEntity) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -166,7 +173,7 @@ class PostsController {
     res: Response<PostView | validationErrorsDto | { message: string }>,
   ) {
     try {
-      const updateStatus = await postsServiceInstance.updateById(
+      const updateStatus = await this.postsService.updateById(
         req.params.id,
         req.body,
       );
@@ -186,7 +193,7 @@ class PostsController {
 
   async deletePost(req: RequestWithParams<URIParamsId>, res: Response) {
     try {
-      const isDeleted = await postsServiceInstance.deleteOneById(req.params.id);
+      const isDeleted = await this.postsService.deleteOneById(req.params.id);
 
       if (!isDeleted) {
         return res.sendStatus(HttpStatus.NotFound);

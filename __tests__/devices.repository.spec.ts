@@ -9,9 +9,10 @@
 
 import config from "../src/core/settings/config";
 import { closeDB, devicesCollection, runDB } from "../src/db/mongo";
-import { devicesRepositoryInstance } from "../src/features/devices/repositories/devices.repository";
+import { DevicesRepository } from "../src/features/devices/repositories/devices.repository";
 
 describe("devices.repository", () => {
+  const devicesRepositoryInstance = new DevicesRepository();
   beforeAll(async () => {
     // connect to test database
     await runDB(config.mongoUrl);

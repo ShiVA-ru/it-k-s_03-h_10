@@ -1,7 +1,7 @@
 import type { IdType } from "../../../core/types/id.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { postsRepositoryInstance } from "../../posts/repositories/posts.repository";
+import { PostsRepository } from "../../posts/repositories/posts.repository";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import { CommentsRepository } from "../repositories/comments.repository";
 import { CommentDb } from "../types/comments.db.type";
@@ -9,16 +9,19 @@ import type { CommentInput } from "../types/comments.input.type";
 
 export class CommentsService {
   private commentsRepository: CommentsRepository;
+  private postsRepository: PostsRepository;
 
   constructor() {
     this.commentsRepository = new CommentsRepository();
+    this.postsRepository = new PostsRepository();
   }
+
   async create(
     userId: string,
     postId: string,
     dto: CommentInput,
   ): Promise<Result<IdType | null>> {
-    const postEntity = await postsRepositoryInstance.findOneById(postId);
+    const postEntity = await this.postsRepository.findOneById(postId);
 
     if (!postEntity) {
       return {
