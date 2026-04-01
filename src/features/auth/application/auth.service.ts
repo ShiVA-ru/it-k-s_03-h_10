@@ -2,8 +2,8 @@ import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { deviceServiceInstance } from "../../devices/application/devices.service";
-import { devicesRepositoryInstance } from "../../devices/repositories/devices.repository";
+import { DeviceService } from "../../devices/application/devices.service";
+import { DevicesRepository } from "../../devices/repositories/devices.repository";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map";
 import { usersRepositoryInstance } from "../../users/repositories/users.repository";
 import type { UserView } from "../../users/types/users.view.type";
@@ -12,6 +12,12 @@ import { bcryptService } from "./bcrypt.service";
 import { jwtService } from "./jwt.service";
 
 class AuthService {
+  private devicesRepository: DevicesRepository;
+  private deviceService: DeviceService;
+  constructor() {
+    this.devicesRepository = new DevicesRepository();
+    this.deviceService = new DeviceService();
+  }
   async loginUser(
     loginOrEmail: string,
     password: string,
@@ -34,7 +40,7 @@ class AuthService {
     }
     const userId = userCredentialsResult.data.id;
 
-    const createSessionResult = await deviceServiceInstance.create(
+    const createSessionResult = await this.deviceService.create(
       {
         ...deviceMeta,
         userId,
@@ -80,7 +86,7 @@ class AuthService {
     deviceId: string,
   ): Promise<Result<true | null>> {
     try {
-      const isDeleted = await devicesRepositoryInstance.deleteOneById(
+      const isDeleted = await this.devicesRepository.deleteOneById(
         deviceId,
         userId,
       );
@@ -161,7 +167,7 @@ class AuthService {
       };
     }
 
-    const isUpdated = await devicesRepositoryInstance.update(deviceId, now);
+    const isUpdated = await this.devicesRepository.update(deviceId, now);
 
     if (!isUpdated) {
       return {

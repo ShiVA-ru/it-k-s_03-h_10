@@ -9,7 +9,7 @@ import type {
 } from "../../../core/types/request.types";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { deviceServiceInstance } from "../../devices/application/devices.service";
+import { DeviceService } from "../../devices/application/devices.service";
 import { usersQueryRepositoryInstance } from "../../users/repositories/users.query.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import { registrationServiceInstance } from "../application/auth.registration.service";
@@ -20,6 +20,12 @@ import type { MeView } from "../types/me.view.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
 class AuthController {
+  private deviceService: DeviceService;
+
+  constructor() {
+    this.deviceService = new DeviceService();
+  }
+
   async login(req: RequestWithBody<LoginInput>, res: Response) {
     try {
       const { loginOrEmail, password } = req.body;
@@ -55,10 +61,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const isSessionExist = await deviceServiceInstance.findById(
-        deviceId,
-        iat,
-      );
+      const isSessionExist = await this.deviceService.findById(deviceId, iat);
 
       if (!isSessionExist) {
         return res.sendStatus(HttpStatus.Unauthorized);
@@ -87,10 +90,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const isSessionExist = await deviceServiceInstance.findById(
-        deviceId,
-        iat,
-      );
+      const isSessionExist = await this.deviceService.findById(deviceId, iat);
 
       if (!isSessionExist) {
         return res.sendStatus(HttpStatus.Unauthorized);

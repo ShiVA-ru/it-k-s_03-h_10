@@ -6,11 +6,19 @@ import type {
   RequestWithUserId,
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
-import { deviceServiceInstance } from "../application/devices.service";
-import { devicesQueryRepositoryInstance } from "../repositories/devices.query.repository";
+import { DeviceService } from "../application/devices.service";
+import { DevicesQueryRepository } from "../repositories/devices.query.repository";
 import type { DeviceView } from "../types/devices.view.type";
 
 class DeviceController {
+  private devicesQueryRepository: DevicesQueryRepository;
+  private deviceService: DeviceService;
+
+  constructor() {
+    this.devicesQueryRepository = new DevicesQueryRepository();
+    this.deviceService = new DeviceService();
+  }
+
   async getUserActiveSessions(
     req: RequestWithUserId<IdType>,
     res: Response<DeviceView[]>,
@@ -23,7 +31,7 @@ class DeviceController {
       }
 
       const devicesListOutput =
-        await devicesQueryRepositoryInstance.findAll(userId);
+        await this.devicesQueryRepository.findAll(userId);
 
       res.status(HttpStatus.Ok).json(devicesListOutput);
     } catch (error) {
@@ -41,10 +49,7 @@ class DeviceController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const isDeleted = await deviceServiceInstance.deleteOther(
-        userId,
-        deviceId,
-      );
+      const isDeleted = await this.deviceService.deleteOther(userId, deviceId);
 
       if (!isDeleted) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -65,7 +70,7 @@ class DeviceController {
       const deviceId = req.params.id;
       const userId = req.refreshTokenPayload.userId;
 
-      const findEntity = await deviceServiceInstance.findByDeviceId(deviceId);
+      const findEntity = await this.deviceService.findByDeviceId(deviceId);
 
       if (!userId || !findEntity) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -75,7 +80,7 @@ class DeviceController {
         return res.sendStatus(HttpStatus.Forbidden);
       }
 
-      const isDeleted = await deviceServiceInstance.deleteOneById(
+      const isDeleted = await this.deviceService.deleteOneById(
         req.params.id,
         userId,
       );

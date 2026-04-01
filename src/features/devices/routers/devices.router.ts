@@ -12,13 +12,15 @@ devicesRouter
     "/",
     deviceMetaMiddleware,
     refreshTokenGuardMiddleware,
-    deviceControllerInstance.getUserActiveSessions,
+    deviceControllerInstance.getUserActiveSessions.bind(
+      deviceControllerInstance,
+    ),
   )
 
   .delete(
     "/",
     refreshTokenGuardMiddleware,
-    deviceControllerInstance.deleteDevices,
+    deviceControllerInstance.deleteDevices.bind(deviceControllerInstance),
   )
 
   .delete(
@@ -26,5 +28,7 @@ devicesRouter
     refreshTokenGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    deviceControllerInstance.deleteDeviceByIdHandler,
+    deviceControllerInstance.deleteDeviceByIdHandler.bind(
+      deviceControllerInstance,
+    ),
   );
