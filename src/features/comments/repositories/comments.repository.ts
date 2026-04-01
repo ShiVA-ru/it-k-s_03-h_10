@@ -3,7 +3,7 @@ import { commentsCollection } from "../../../db/mongo";
 import type { CommentDb } from "../types/comments.db.type";
 import type { CommentInput } from "../types/comments.input.type";
 
-class CommentsRepository {
+export class CommentsRepository {
   async create(dto: CommentDb): Promise<string> {
     const result = await commentsCollection.insertOne(dto);
 
@@ -61,5 +61,3 @@ class CommentsRepository {
     return item;
   }
 }
-
-export const commentsRepositoryInstance = new CommentsRepository();

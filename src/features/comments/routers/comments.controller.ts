@@ -9,18 +9,25 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { commentsServiceInstance } from "../application/comments.service";
-import { commentsQueryRepositoryInstance } from "../repositories/comments.query.repository";
+import { CommentsService } from "../application/comments.service";
+import { CommentsQueryRepository } from "../repositories/comments.query.repository";
 import type { CommentInput } from "../types/comments.input.type";
 import type { CommentView } from "../types/comments.view.type";
 
 class CommentsController {
+  private commentsService: CommentsService;
+  private commentsQueryRepository: CommentsQueryRepository;
+
+  constructor() {
+    this.commentsService = new CommentsService();
+    this.commentsQueryRepository = new CommentsQueryRepository();
+  }
   async getComment(
     req: RequestWithParams<URIParamsId>,
     res: Response<CommentView>,
   ) {
     try {
-      const findEntity = await commentsQueryRepositoryInstance.findOneById(
+      const findEntity = await this.commentsQueryRepository.findOneById(
         req.params.id,
       );
 
@@ -49,7 +56,7 @@ class CommentsController {
         return;
       }
 
-      const updatedResult = await commentsServiceInstance.updateById(
+      const updatedResult = await this.commentsService.updateById(
         userId,
         req.params.id,
         req.body,
@@ -83,7 +90,7 @@ class CommentsController {
         return;
       }
 
-      const deletedResult = await commentsServiceInstance.deleteOneById(
+      const deletedResult = await this.commentsService.deleteOneById(
         userId,
         req.params.id,
       );

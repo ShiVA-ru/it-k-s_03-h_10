@@ -7,7 +7,7 @@ import type { CommentView } from "../types/comments.view.type";
 import { mapCommentsToPaginatedView } from "./mappers/comments.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/comments.entity-map";
 
-class CommentsQueryRepository {
+export class CommentsQueryRepository {
   async findAll(queryDto: CommentsQueryInput): Promise<Paginator<CommentView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const filter = {};
@@ -66,5 +66,3 @@ class CommentsQueryRepository {
     return postsListOutput;
   }
 }
-
-export const commentsQueryRepositoryInstance = new CommentsQueryRepository();

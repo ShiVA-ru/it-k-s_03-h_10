@@ -7,14 +7,12 @@ import { commentsControllerInstance } from "./comments.controller";
 
 export const commentsRouter = Router();
 
-//Заменить тип Response PostView на DTO
-
 commentsRouter
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.getComment,
+    commentsControllerInstance.getComment.bind(commentsControllerInstance),
   )
   //UPDATE
   .put(
@@ -23,7 +21,7 @@ commentsRouter
     idValidation,
     commentInputDtoValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.updateComment,
+    commentsControllerInstance.updateComment.bind(commentsControllerInstance),
   )
   // DELETE
   .delete(
@@ -31,5 +29,5 @@ commentsRouter
     accessTokenGuardMiddleware,
     idValidation,
     inputValidationResultMiddleware,
-    commentsControllerInstance.deleteComment,
+    commentsControllerInstance.deleteComment.bind(commentsControllerInstance),
   );

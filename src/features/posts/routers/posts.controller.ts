@@ -12,8 +12,8 @@ import type {
 } from "../../../core/types/request.types";
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { commentsServiceInstance } from "../../comments/application/comments.service";
-import { commentsQueryRepositoryInstance } from "../../comments/repositories/comments.query.repository";
+import { CommentsService } from "../../comments/application/comments.service";
+import { CommentsQueryRepository } from "../../comments/repositories/comments.query.repository";
 import type { CommentInput } from "../../comments/types/comments.input.type";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type";
 import type { CommentView } from "../../comments/types/comments.view.type";
@@ -25,6 +25,13 @@ import type { PostsQueryInput } from "../types/posts.query.type";
 import type { PostView } from "../types/posts.view.type";
 
 class PostsController {
+  private commentsService: CommentsService;
+  private commentsQueryRepository: CommentsQueryRepository;
+
+  constructor() {
+    this.commentsService = new CommentsService();
+    this.commentsQueryRepository = new CommentsQueryRepository();
+  }
   async getPost(
     req: RequestWithParams<URIParamsId>,
     res: Response<PostView | validationErrorsDto>,
@@ -78,7 +85,7 @@ class PostsController {
       }
 
       const commentsListOutput =
-        await commentsQueryRepositoryInstance.findByPostId(postId, queryData);
+        await this.commentsQueryRepository.findByPostId(postId, queryData);
 
       return res.status(HttpStatus.Ok).json(commentsListOutput);
     } catch (error) {
@@ -129,7 +136,7 @@ class PostsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const createResult = await commentsServiceInstance.create(
+      const createResult = await this.commentsService.create(
         userId,
         postId,
         req.body,
@@ -139,7 +146,7 @@ class PostsController {
         return res.sendStatus(HttpStatus.NotFound);
       }
 
-      const createdEntity = await commentsQueryRepositoryInstance.findOneById(
+      const createdEntity = await this.commentsQueryRepository.findOneById(
         createResult.data.id,
       );
 
