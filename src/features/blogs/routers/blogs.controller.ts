@@ -17,19 +17,23 @@ import { PostsQueryRepository } from "../../posts/repositories/posts.query.repos
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type";
 import type { PostView } from "../../posts/types/posts.view.type";
-import { blogsServiceInstance } from "../application/blogs.service";
-import { blogsQueryRepositoryInstance } from "../repositories/blogs.query.repository";
+import { BlogsService } from "../application/blogs.service";
+import { BlogsQueryRepository } from "../repositories/blogs.query.repository";
 import type { BlogInput } from "../types/blogs.input.type";
 import type { BlogsQueryInput } from "../types/blogs.query.type";
 import type { BlogView } from "../types/blogs.view.type";
 
 class BlogsController {
   private postsQueryRepository: PostsQueryRepository;
+  private blogsQueryRepository: BlogsQueryRepository;
   private postsService: PostsService;
+  private blogsService: BlogsService;
 
   constructor() {
     this.postsQueryRepository = new PostsQueryRepository();
+    this.blogsQueryRepository = new BlogsQueryRepository();
     this.postsService = new PostsService();
+    this.blogsService = new BlogsService();
   }
 
   async getBlog(
@@ -37,7 +41,7 @@ class BlogsController {
     res: Response<BlogView | validationErrorsDto>,
   ) {
     try {
-      const findEntity = await blogsQueryRepositoryInstance.findOneById(
+      const findEntity = await this.blogsQueryRepository.findOneById(
         req.params.id,
       );
 
@@ -59,7 +63,7 @@ class BlogsController {
       });
 
       const blogsListOutput =
-        await blogsQueryRepositoryInstance.findAll(queryData);
+        await this.blogsQueryRepository.findAll(queryData);
 
       res.status(HttpStatus.Ok).json(blogsListOutput);
     } catch (error) {
@@ -71,7 +75,7 @@ class BlogsController {
   async getBlogsPosts(req: Request, res: Response<Paginator<PostView>>) {
     try {
       const blogId = req.params.id.toString();
-      const blog = await blogsQueryRepositoryInstance.findOneById(blogId);
+      const blog = await this.blogsQueryRepository.findOneById(blogId);
 
       if (!blog) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -101,10 +105,10 @@ class BlogsController {
     res: Response<BlogView | validationErrorType>,
   ) {
     try {
-      const insertedId = await blogsServiceInstance.create(req.body);
+      const insertedId = await this.blogsService.create(req.body);
 
       const createdEntity =
-        await blogsQueryRepositoryInstance.findOneById(insertedId);
+        await this.blogsQueryRepository.findOneById(insertedId);
 
       if (!createdEntity) {
         return res.sendStatus(HttpStatus.NotFound);
@@ -153,7 +157,7 @@ class BlogsController {
     res: Response<BlogView | validationErrorsDto>,
   ) {
     try {
-      const isUpdated = await blogsServiceInstance.updateById(
+      const isUpdated = await this.blogsService.updateById(
         req.params.id,
         req.body,
       );
@@ -172,7 +176,7 @@ class BlogsController {
 
   async deleteBlog(req: RequestWithParams<URIParamsId>, res: Response) {
     try {
-      const isDeleted = await blogsServiceInstance.deleteOneById(req.params.id);
+      const isDeleted = await this.blogsService.deleteOneById(req.params.id);
 
       if (!isDeleted) {
         res.sendStatus(HttpStatus.NotFound);

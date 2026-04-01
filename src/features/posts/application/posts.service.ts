@@ -1,17 +1,19 @@
-import { blogsRepositoryInstance } from "../../blogs/repositories/blogs.repository";
+import { BlogsRepository } from "../../blogs/repositories/blogs.repository";
 import { PostsRepository } from "../repositories/posts.repository";
 import { PostDb } from "../types/posts.db.type";
 import type { PostInput } from "../types/posts.input.type";
 
 export class PostsService {
   private postsRepository: PostsRepository;
+  private blogsRepository: BlogsRepository;
 
   constructor() {
     this.postsRepository = new PostsRepository();
+    this.blogsRepository = new BlogsRepository();
   }
 
   async create(dto: PostInput): Promise<string | null> {
-    const blogEntity = await blogsRepositoryInstance.findOneById(dto.blogId);
+    const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
 
     if (!blogEntity) {
       return null;
@@ -32,7 +34,7 @@ export class PostsService {
     id: string,
     dto: PostInput,
   ): Promise<{ notFound: boolean; entity: "post" | "blog" | null }> {
-    const blogEntity = await blogsRepositoryInstance.findOneById(dto.blogId);
+    const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
 
     if (!blogEntity) {
       return { notFound: true, entity: "blog" };

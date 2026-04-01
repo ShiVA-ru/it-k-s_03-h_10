@@ -1,21 +1,25 @@
-import { blogsRepositoryInstance } from "../repositories/blogs.repository";
+import { BlogsRepository } from "../repositories/blogs.repository";
 import { BlogDb } from "../types/blogs.db.type";
 import type { BlogInput } from "../types/blogs.input.type";
 
-class BlogsService {
+export class BlogsService {
+  private blogsRepository: BlogsRepository;
+
+  constructor() {
+    this.blogsRepository = new BlogsRepository();
+  }
+
   async create(dto: BlogInput): Promise<string> {
     const newEntity = new BlogDb(dto.name, dto.description, dto.websiteUrl);
 
-    return blogsRepositoryInstance.create(newEntity);
+    return this.blogsRepository.create(newEntity);
   }
 
   async updateById(id: string, dto: BlogInput): Promise<boolean> {
-    return await blogsRepositoryInstance.updateById(id, dto);
+    return await this.blogsRepository.updateById(id, dto);
   }
 
   async deleteOneById(id: string): Promise<boolean> {
-    return await blogsRepositoryInstance.deleteOneById(id);
+    return await this.blogsRepository.deleteOneById(id);
   }
 }
-
-export const blogsServiceInstance = new BlogsService();

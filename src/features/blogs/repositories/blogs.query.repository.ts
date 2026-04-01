@@ -7,7 +7,7 @@ import type { BlogView } from "../types/blogs.view.type";
 import { mapBlogsToPaginatedView } from "./mappers/blogs.entity-list-map";
 import { mapEntityToViewModel } from "./mappers/blogs.entity-map";
 
-class BlogsQueryRepository {
+export class BlogsQueryRepository {
   async findAll(queryDto: BlogsQueryInput): Promise<Paginator<BlogView>> {
     const { skip, limit, sort } = buildDbQueryOptions(queryDto);
     const searchConditions = [];
@@ -46,5 +46,3 @@ class BlogsQueryRepository {
     return mapEntityToViewModel(item);
   }
 }
-
-export const blogsQueryRepositoryInstance = new BlogsQueryRepository();

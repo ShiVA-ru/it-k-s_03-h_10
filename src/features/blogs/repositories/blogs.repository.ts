@@ -3,7 +3,7 @@ import { blogsCollection } from "../../../db/mongo";
 import type { BlogDb } from "../types/blogs.db.type";
 import type { BlogInput } from "../types/blogs.input.type";
 
-class BlogsRepository {
+export class BlogsRepository {
   async create(dto: BlogDb): Promise<string> {
     const result = await blogsCollection.insertOne(dto);
 
@@ -51,5 +51,3 @@ class BlogsRepository {
     return item;
   }
 }
-
-export const blogsRepositoryInstance = new BlogsRepository();
