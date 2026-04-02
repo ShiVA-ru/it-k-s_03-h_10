@@ -8,7 +8,7 @@ import { refreshTokenGuardMiddleware } from "../middlewares/refresh-token.guard"
 import { loginInputDtoValidation } from "../validation/auth.input-dto.validation.middleware";
 import { confirmationCodeValidation } from "../validation/auth.registration-confirm.validation.middleware";
 import { emailValidation } from "../validation/auth.registration-resending.validation.middleware";
-import { authControllerInstance } from "./auth.controller";
+import { authController } from "../../../composition-root";
 
 export const authRouter = Router();
 
@@ -19,24 +19,24 @@ authRouter
     loginInputDtoValidation,
     inputValidationResultMiddleware,
     deviceMetaMiddleware,
-    authControllerInstance.login.bind(authControllerInstance),
+    authController.login.bind(authController),
   )
   .post(
     "/logout",
     refreshTokenGuardMiddleware,
-    authControllerInstance.logout.bind(authControllerInstance),
+    authController.logout.bind(authController),
   )
 
   .post(
     "/refresh-token",
     refreshTokenGuardMiddleware,
-    authControllerInstance.refreshToken.bind(authControllerInstance),
+    authController.refreshToken.bind(authController),
   )
 
   .get(
     "/me",
     accessTokenGuardMiddleware,
-    authControllerInstance.getMe.bind(authControllerInstance),
+    authController.getMe.bind(authController),
   )
 
   .post(
@@ -44,7 +44,7 @@ authRouter
     rateLimitGuardMiddleware,
     userInputDtoValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registration.bind(authControllerInstance),
+    authController.registration.bind(authController),
   )
 
   .post(
@@ -52,9 +52,7 @@ authRouter
     rateLimitGuardMiddleware,
     confirmationCodeValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registrationConfirmation.bind(
-      authControllerInstance,
-    ),
+    authController.registrationConfirmation.bind(authController),
   )
 
   .post(
@@ -62,7 +60,5 @@ authRouter
     rateLimitGuardMiddleware,
     emailValidation,
     inputValidationResultMiddleware,
-    authControllerInstance.registrationEmailResending.bind(
-      authControllerInstance,
-    ),
+    authController.registrationEmailResending.bind(authController),
   );

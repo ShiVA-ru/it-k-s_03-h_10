@@ -4,7 +4,7 @@ import { idValidation } from "../../../core/middlewares/validation/params-id-val
 import { superAdminGuardMiddleware } from "../../auth/middlewares/super-admin.guard";
 import { userInputDtoValidation } from "../validation/users.input-dto.validation.middleware";
 import { paginationSortingSearchValidation } from "../validation/users.query.validation.middleware";
-import { usersControllerInstance } from "./users.controller";
+import { usersController } from "../../../composition-root";
 
 export const usersRouter = Router();
 
@@ -15,25 +15,25 @@ usersRouter
     "/",
     userInputDtoValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.createUser.bind(usersControllerInstance),
+    usersController.createUser.bind(usersController),
   )
   .get(
     "/",
     paginationSortingSearchValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.getUsers.bind(usersControllerInstance),
+    usersController.getUsers.bind(usersController),
   )
 
   .get(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.getUser.bind(usersControllerInstance),
+    usersController.getUser.bind(usersController),
   )
 
   .delete(
     "/:id",
     idValidation,
     inputValidationResultMiddleware,
-    usersControllerInstance.deleteUser.bind(usersControllerInstance),
+    usersController.deleteUser.bind(usersController),
   );

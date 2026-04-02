@@ -10,13 +10,10 @@ import type { RegistrationConfirmationCode } from "../types/confirmation.input.t
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
 export class RegistrationService {
-  private usersRepository: UsersRepository;
-  private usersService: UsersService;
-
-  constructor() {
-    this.usersRepository = new UsersRepository();
-    this.usersService = new UsersService();
-  }
+  constructor(
+    private usersRepository: UsersRepository,
+    private usersService: UsersService,
+  ) {}
 
   async registration(dto: UserInput): Promise<Result<true>> {
     const { login, email } = dto;

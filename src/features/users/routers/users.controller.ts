@@ -13,20 +13,17 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { UsersService } from "../application/users.service";
-import { UsersQueryRepository } from "../repositories/users.query.repository";
+import type { UsersService } from "../application/users.service";
+import type { UsersQueryRepository } from "../repositories/users.query.repository";
 import type { UserInput } from "../types/users.input.type";
 import type { UsersQueryInput } from "../types/users.query.type";
 import type { UserView } from "../types/users.view.type";
 
-class UsersController {
-  private usersQueryRepository: UsersQueryRepository;
-  private usersService: UsersService;
-
-  constructor() {
-    this.usersQueryRepository = new UsersQueryRepository();
-    this.usersService = new UsersService();
-  }
+export class UsersController {
+  constructor(
+    private usersQueryRepository: UsersQueryRepository,
+    private usersService: UsersService,
+  ) {}
 
   async getUser(
     req: RequestWithParams<URIParamsId>,
@@ -108,5 +105,3 @@ class UsersController {
     }
   }
 }
-
-export const usersControllerInstance = new UsersController();

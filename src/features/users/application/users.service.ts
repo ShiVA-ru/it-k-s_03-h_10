@@ -1,16 +1,12 @@
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { bcryptService } from "../../auth/application/bcrypt.service";
-import { UsersRepository } from "../repositories/users.repository";
+import type { UsersRepository } from "../repositories/users.repository";
 import { UserDb } from "../types/users.db.type";
 import type { UserInput } from "../types/users.input.type";
 
 export class UsersService {
-  private usersRepository: UsersRepository;
-
-  constructor() {
-    this.usersRepository = new UsersRepository();
-  }
+  constructor(protected usersRepository: UsersRepository) {}
 
   async create(
     dto: UserInput,

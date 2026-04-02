@@ -2,25 +2,21 @@ import type { DeviceMeta } from "../../../core/types/device-meta.types";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { DeviceService } from "../../devices/application/devices.service";
-import { DevicesRepository } from "../../devices/repositories/devices.repository";
+import type { DevicesService } from "../../devices/application/devices.service";
+import type { DevicesRepository } from "../../devices/repositories/devices.repository";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map";
-import { UsersRepository } from "../../users/repositories/users.repository";
+import type { UsersRepository } from "../../users/repositories/users.repository";
 import type { UserView } from "../../users/types/users.view.type";
 import type { TokenPair } from "../types/token-pair.type";
 import { bcryptService } from "./bcrypt.service";
 import { jwtService } from "./jwt.service";
 
 export class AuthService {
-  private devicesRepository: DevicesRepository;
-  private usersRepository: UsersRepository;
-  private deviceService: DeviceService;
-
-  constructor() {
-    this.devicesRepository = new DevicesRepository();
-    this.usersRepository = new UsersRepository();
-    this.deviceService = new DeviceService();
-  }
+  constructor(
+    private devicesRepository: DevicesRepository,
+    private usersRepository: UsersRepository,
+    private devicesService: DevicesService,
+  ) {}
 
   async loginUser(
     loginOrEmail: string,
@@ -44,7 +40,7 @@ export class AuthService {
     }
     const userId = userCredentialsResult.data.id;
 
-    const createSessionResult = await this.deviceService.create(
+    const createSessionResult = await this.devicesService.create(
       {
         ...deviceMeta,
         userId,

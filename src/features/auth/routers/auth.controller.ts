@@ -9,28 +9,23 @@ import type {
 } from "../../../core/types/request.types";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
 import { isSuccessResult } from "../../../core/utils/type-guards";
-import { DeviceService } from "../../devices/application/devices.service";
-import { UsersQueryRepository } from "../../users/repositories/users.query.repository";
+import type { DevicesService } from "../../devices/application/devices.service";
+import type { UsersQueryRepository } from "../../users/repositories/users.query.repository";
 import type { UserInput } from "../../users/types/users.input.type";
-import { RegistrationService } from "../application/auth.registration.service";
-import { AuthService } from "../application/auth.service";
+import type { RegistrationService } from "../application/auth.registration.service";
+import type { AuthService } from "../application/auth.service";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
 import type { LoginInput } from "../types/login.input.type";
 import type { MeView } from "../types/me.view.type";
 import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
 
-class AuthController {
-  private usersQueryRepository: UsersQueryRepository;
-  private deviceService: DeviceService;
-  private registrationService: RegistrationService;
-  private authService: AuthService;
-
-  constructor() {
-    this.usersQueryRepository = new UsersQueryRepository();
-    this.deviceService = new DeviceService();
-    this.registrationService = new RegistrationService();
-    this.authService = new AuthService();
-  }
+export class AuthController {
+  constructor(
+    private usersQueryRepository: UsersQueryRepository,
+    private devicesService: DevicesService,
+    private registrationService: RegistrationService,
+    private authService: AuthService,
+  ) {}
 
   async login(req: RequestWithBody<LoginInput>, res: Response) {
     try {
@@ -67,7 +62,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const isSessionExist = await this.deviceService.findById(deviceId, iat);
+      const isSessionExist = await this.devicesService.findById(deviceId, iat);
 
       if (!isSessionExist) {
         return res.sendStatus(HttpStatus.Unauthorized);
@@ -96,7 +91,7 @@ class AuthController {
         return res.sendStatus(HttpStatus.Unauthorized);
       }
 
-      const isSessionExist = await this.deviceService.findById(deviceId, iat);
+      const isSessionExist = await this.devicesService.findById(deviceId, iat);
 
       if (!isSessionExist) {
         return res.sendStatus(HttpStatus.Unauthorized);
@@ -211,5 +206,3 @@ class AuthController {
     }
   }
 }
-
-export const authControllerInstance = new AuthController();
