@@ -3,209 +3,295 @@ import dayjs from "dayjs";
 import { emailAdapter } from "../../../adapters/email.adapter";
 import { ResultStatus } from "../../../core/types/result.code";
 import type { Result } from "../../../core/types/result.type";
-import { UsersService } from "../../users/application/users.service";
-import { UsersRepository } from "../../users/repositories/users.repository";
+import type { UsersService } from "../../users/application/users.service";
+import type { UsersRepository } from "../../users/repositories/users.repository";
 import type { UserInput } from "../../users/types/users.input.type";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
-import type { RegistrationEmailResending } from "../types/registration-resending.input.type";
+import type { RegistrationEmail } from "../types/email.input.type";
+import type { PasswordRecoveryInput } from "../types/new-pass.input.type";
+import { bcryptService } from "./bcrypt.service";
 
 export class RegistrationService {
-  constructor(
-    private usersRepository: UsersRepository,
-    private usersService: UsersService,
-  ) {}
+	constructor(
+		private usersRepository: UsersRepository,
+		private usersService: UsersService,
+	) {}
 
-  async registration(dto: UserInput): Promise<Result<true>> {
-    const { login, email } = dto;
-    console.log(dto);
+	async registration(dto: UserInput): Promise<Result<true>> {
+		const { login, email } = dto;
+		console.log(dto);
 
-    const isUserExistByLogin = await this.usersRepository.isExistByLogin(login);
+		const isUserExistByLogin = await this.usersRepository.isExistByLogin(login);
 
-    if (isUserExistByLogin) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "login", message: "Already Registered" }],
-      };
-    }
-    const isUserExistByEmail = await this.usersRepository.isExistByEmail(email);
+		if (isUserExistByLogin) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "login", message: "Already Registered" }],
+			};
+		}
+		const isUserExistByEmail = await this.usersRepository.isExistByEmail(email);
 
-    if (isUserExistByEmail) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "email", message: "Already Registered" }],
-      };
-    }
-    console.log("user not exist");
+		if (isUserExistByEmail) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "email", message: "Already Registered" }],
+			};
+		}
+		console.log("user not exist");
 
-    const result = await this.usersService.create(dto);
-    console.log("user created", result.data?.insertedId);
+		const result = await this.usersService.create(dto);
+		console.log("user created", result.data?.insertedId);
 
-    if (!result.data) {
-      return {
-        status: ResultStatus.InternalServerError,
-        errorMessage: "InternalServerError",
-        data: null,
-        extensions: [],
-      };
-    }
+		if (!result.data) {
+			return {
+				status: ResultStatus.InternalServerError,
+				errorMessage: "InternalServerError",
+				data: null,
+				extensions: [],
+			};
+		}
 
-    const createdEntity = await this.usersRepository.findOneById(
-      result.data.insertedId,
-    );
+		const createdEntity = await this.usersRepository.findOneById(
+			result.data.insertedId,
+		);
 
-    if (!createdEntity) {
-      return {
-        status: ResultStatus.InternalServerError,
-        errorMessage: "InternalServerError",
-        data: null,
-        extensions: [],
-      };
-    }
+		if (!createdEntity) {
+			return {
+				status: ResultStatus.InternalServerError,
+				errorMessage: "InternalServerError",
+				data: null,
+				extensions: [],
+			};
+		}
 
-    console.log("userInfo", createdEntity);
+		console.log("userInfo", createdEntity);
 
-    if (!createdEntity.isEmailConfirmed) {
-      console.log("почта отправлена", createdEntity.isEmailConfirmed);
-      emailAdapter
-        .sendEmail(
-          email,
-          `<h1>Thank for your registration</h1>
+		if (!createdEntity.isEmailConfirmed) {
+			console.log("почта отправлена", createdEntity.isEmailConfirmed);
+			emailAdapter
+				.sendEmail(
+					email,
+					`<h1>Thank for your registration</h1>
          <p>To finish registration please follow the link below:
             <a href='https://somesite.com/confirm-email?code=${createdEntity.confirmationCode}'>complete registration</a>
          </p>
          `,
-        )
-        .catch((e) => {
-          console.error(e);
-        });
-    }
-    console.log("confirmationCode", createdEntity.confirmationCode);
-    console.log(
-      "confirmationCodeExpirationDate",
-      createdEntity.confirmationCodeExpirationDate,
-    );
+				)
+				.catch((e) => {
+					console.error(e);
+				});
+		}
+		console.log("confirmationCode", createdEntity.confirmationCode);
+		console.log(
+			"confirmationCodeExpirationDate",
+			createdEntity.confirmationCodeExpirationDate,
+		);
 
-    return {
-      status: ResultStatus.Success,
-      extensions: [],
-      data: true,
-    };
-  }
+		return {
+			status: ResultStatus.Success,
+			extensions: [],
+			data: true,
+		};
+	}
 
-  async confirmEmail(dto: RegistrationConfirmationCode): Promise<Result<true>> {
-    const user = await this.usersRepository.findOneByConfirmationCode(dto.code);
+	async confirmEmail(dto: RegistrationConfirmationCode): Promise<Result<true>> {
+		const user = await this.usersRepository.findOneByConfirmationCode(dto.code);
 
-    if (!user) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "code", message: "Code not found" }],
-      };
-    }
+		if (!user) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "code", message: "Code not found" }],
+			};
+		}
 
-    if (user.isEmailConfirmed) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "User already confirmed",
-        data: null,
-        extensions: [],
-      };
-    }
+		if (user.isEmailConfirmed) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "User already confirmed",
+				data: null,
+				extensions: [],
+			};
+		}
 
-    if (dayjs().isAfter(user.confirmationCodeExpirationDate)) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Time is expired",
-        data: null,
-        extensions: [],
-      };
-    }
+		if (dayjs().isAfter(user.confirmationCodeExpirationDate)) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Time is expired",
+				data: null,
+				extensions: [],
+			};
+		}
 
-    const updatedResult = await this.usersRepository.updateUserConfirmationData(
-      user._id,
-    );
+		const updatedResult = await this.usersRepository.updateUserConfirmationData(
+			user._id,
+		);
 
-    if (!updatedResult) {
-      return {
-        status: ResultStatus.InternalServerError,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "code", message: "Code not updated" }],
-      };
-    }
+		if (!updatedResult) {
+			return {
+				status: ResultStatus.InternalServerError,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "code", message: "Code not updated" }],
+			};
+		}
 
-    return {
-      status: ResultStatus.Success,
-      extensions: [],
-      data: true,
-    };
-  }
+		return {
+			status: ResultStatus.Success,
+			extensions: [],
+			data: true,
+		};
+	}
 
-  async emailResending(dto: RegistrationEmailResending): Promise<Result<true>> {
-    const { email } = dto;
-    console.log(dto);
+	async emailResending(dto: RegistrationEmail): Promise<Result<true>> {
+		const { email } = dto;
+		console.log(dto);
 
-    const user = await this.usersRepository.isExistByEmail(email);
+		const user = await this.usersRepository.isExistByEmail(email);
 
-    if (!user) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "email", message: "email does not exist" }],
-      };
-    }
+		if (!user) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "email", message: "email does not exist" }],
+			};
+		}
 
-    if (user.isEmailConfirmed) {
-      return {
-        status: ResultStatus.BadRequest,
-        errorMessage: "Bad Request",
-        data: null,
-        extensions: [{ field: "email", message: "email already confirmed" }],
-      };
-    }
+		if (user.isEmailConfirmed) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad Request",
+				data: null,
+				extensions: [{ field: "email", message: "email already confirmed" }],
+			};
+		}
 
-    const newConfirmationCode = randomUUID().toString();
-    const confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
+		const newConfirmationCode = randomUUID().toString();
+		const confirmationCodeExpirationDate = dayjs().add(1, "hour").toISOString();
 
-    console.log("почта отправлена", user.isEmailConfirmed);
-    emailAdapter
-      .sendEmail(
-        email,
-        `<h1>Thank for your registration</h1>
+		console.log("почта отправлена", user.isEmailConfirmed);
+		emailAdapter
+			.sendEmail(
+				email,
+				`<h1>Thank for your registration</h1>
          <p>To finish registration please follow the link below:
             <a href='https://somesite.com/confirm-email?code=${newConfirmationCode}'>complete registration</a>
          </p>
          `,
-      )
-      .catch((e) => {
-        console.error(e);
-      });
+			)
+			.catch((e) => {
+				console.error(e);
+			});
 
-    const updateResult = await this.usersRepository.updateUserConfirmationCode(
-      user._id,
-      newConfirmationCode,
-      confirmationCodeExpirationDate,
-    );
+		const updateResult = await this.usersRepository.updateUserConfirmationCode(
+			user._id,
+			newConfirmationCode,
+			confirmationCodeExpirationDate,
+		);
 
-    if (!updateResult) {
-      return {
-        status: ResultStatus.InternalServerError,
-        errorMessage: "InternalServerError",
-        data: null,
-        extensions: [],
-      };
-    }
+		if (!updateResult) {
+			return {
+				status: ResultStatus.InternalServerError,
+				errorMessage: "InternalServerError",
+				data: null,
+				extensions: [],
+			};
+		}
 
-    return {
-      status: ResultStatus.Success,
-      extensions: [],
-      data: true,
-    };
-  }
+		return {
+			status: ResultStatus.Success,
+			extensions: [],
+			data: true,
+		};
+	}
+
+	async passwordRecovery(dto: RegistrationEmail): Promise<undefined> {
+		const { email } = dto;
+		console.log(dto);
+
+		const user = await this.usersRepository.isExistByEmail(email);
+
+		if (!user) {
+			return;
+		}
+
+		if (!user.isEmailConfirmed) {
+			return;
+		}
+
+		const recoveryCode = randomUUID();
+		const recoveryExpiration = dayjs().add(1, "hour").toISOString();
+
+		// console.log("почта отправлена", user.isEmailConfirmed);
+		emailAdapter
+			.sendEmail(
+				email,
+				`<h1>Password recovery</h1>
+         <p>To finish password recovery please follow the link below:
+          <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>
+            recovery password
+          </a>
+        </p>
+        `,
+			)
+			.catch((e) => {
+				console.error(e);
+			});
+
+		await this.usersRepository.updatePasswordRecoveryCode(
+			user._id,
+			recoveryCode,
+			recoveryExpiration,
+		);
+
+		return;
+	}
+
+	async updatePasswordWithRecoveryCode(
+		dto: PasswordRecoveryInput,
+	): Promise<Result<true>> {
+		const { newPassword, recoveryCode } = dto;
+
+		const userEntity =
+			await this.usersRepository.findOneByPasswordRecoveryCode(recoveryCode);
+
+		if (!userEntity) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad request",
+				data: null,
+				extensions: [
+					{ field: "recoveryCode", message: "Invalid recovery code " },
+				],
+			};
+		}
+
+		const newPasswordHash = await bcryptService.generateHash(newPassword);
+
+		const isPasswordUpdate = await this.usersRepository.markPasswordRecovered(
+			userEntity._id,
+			newPasswordHash,
+		);
+
+		if (!isPasswordUpdate) {
+			return {
+				status: ResultStatus.BadRequest,
+				errorMessage: "Bad request",
+				data: null,
+				extensions: [],
+			};
+		}
+
+		return {
+			status: ResultStatus.Success,
+			extensions: [],
+			data: true,
+		};
+	}
 }

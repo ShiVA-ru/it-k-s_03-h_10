@@ -108,4 +108,52 @@ export class UsersRepository {
 
     return true;
   }
+
+  async updatePasswordRecoveryCode(
+    _id: ObjectId,
+    recoveryCode: string,
+    recoveryCodeExpirationDate: string,
+  ): Promise<boolean> {
+    const updateResult = await usersCollection.updateOne(
+      { _id },
+      {
+        $set: {
+          recoveryCode,
+          recoveryCodeExpirationDate,
+        },
+      },
+    );
+
+    if (updateResult.matchedCount < 1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async findOneByPasswordRecoveryCode(
+    code: string,
+  ): Promise<WithId<UserDb> | null> {
+    const item = await usersCollection.findOne({ recoveryCode: code });
+
+    return item ?? null;
+  }
+
+  async markPasswordRecovered(
+    _id: ObjectId,
+    newHashedPassword: string,
+  ): Promise<boolean> {
+    const updateResult = await usersCollection.updateOne(
+      { _id },
+      {
+        $set: {
+          password: newHashedPassword,
+          recoveryCode: null,
+          recoveryCodeExpirationDate: null,
+        },
+      },
+    );
+
+    return updateResult.matchedCount > 0;
+  }
 }

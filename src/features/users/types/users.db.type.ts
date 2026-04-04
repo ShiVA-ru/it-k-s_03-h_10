@@ -5,6 +5,8 @@ export class UserDb {
   public createdAt: string;
   public confirmationCode: string | null;
   public confirmationCodeExpirationDate: string | null;
+  public recoveryCode?: string | null;
+  public recoveryCodeExpirationDate?: string | null;
 
   constructor(
     public login: string,
@@ -17,5 +19,7 @@ export class UserDb {
     this.confirmationCodeExpirationDate = isEmailConfirmed
       ? null
       : dayjs().add(1, "hour").toISOString();
+    this.recoveryCode = null;
+    this.recoveryCodeExpirationDate = null;
   }
 }

@@ -9,6 +9,7 @@ import { loginInputDtoValidation } from "../validation/auth.input-dto.validation
 import { confirmationCodeValidation } from "../validation/auth.registration-confirm.validation.middleware";
 import { emailValidation } from "../validation/auth.registration-resending.validation.middleware";
 import { authController } from "../../../composition-root";
+import { newPasswordDtoValidation } from "../validation/auth.new-pass.validation.middleware";
 
 export const authRouter = Router();
 
@@ -61,4 +62,20 @@ authRouter
     emailValidation,
     inputValidationResultMiddleware,
     authController.registrationEmailResending.bind(authController),
+  )
+
+  .post(
+    "/password-recovery",
+    rateLimitGuardMiddleware,
+    emailValidation,
+    inputValidationResultMiddleware,
+    authController.passwordRecovery.bind(authController),
+  )
+
+  .post(
+    "/new-password",
+    rateLimitGuardMiddleware,
+    newPasswordDtoValidation,
+    inputValidationResultMiddleware,
+    authController.updatePassword.bind(authController),
   );
