@@ -1,12 +1,12 @@
 import type { WithId } from "mongodb";
-import type { CommentDb } from "../../types/comments.db.type";
-import type { CommentView } from "../../types/comments.view.type";
+import type { CommentDb } from "../../types/comments.db.type.js";
+import type { CommentView } from "../../types/comments.view.type.js";
 
 export const mapEntityToViewModel = (
-  dbEntity: WithId<CommentDb>,
+	dbEntity: WithId<CommentDb>,
 ): CommentView => ({
-  id: dbEntity._id.toString(),
-  content: dbEntity.content,
-  commentatorInfo: dbEntity.commentatorInfo,
-  createdAt: dbEntity.createdAt,
+	id: dbEntity._id.toString(),
+	content: dbEntity.content,
+	commentatorInfo: dbEntity.commentatorInfo,
+	createdAt: dbEntity.createdAt,
 });

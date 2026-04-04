@@ -1,55 +1,55 @@
-import type { BlogsRepository } from "../../blogs/repositories/blogs.repository";
-import type { PostsRepository } from "../repositories/posts.repository";
-import { PostDb } from "../types/posts.db.type";
-import type { PostInput } from "../types/posts.input.type";
+import type { BlogsRepository } from "../../blogs/repositories/blogs.repository.js";
+import type { PostsRepository } from "../repositories/posts.repository.js";
+import { PostDb } from "../types/posts.db.type.js";
+import type { PostInput } from "../types/posts.input.type.js";
 
 export class PostsService {
-  constructor(
-    protected postsRepository: PostsRepository,
-    protected blogsRepository: BlogsRepository,
-  ) {}
+	constructor(
+		protected postsRepository: PostsRepository,
+		protected blogsRepository: BlogsRepository,
+	) {}
 
-  async create(dto: PostInput): Promise<string | null> {
-    const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
+	async create(dto: PostInput): Promise<string | null> {
+		const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
 
-    if (!blogEntity) {
-      return null;
-    }
+		if (!blogEntity) {
+			return null;
+		}
 
-    const newEntity = new PostDb(
-      dto.title,
-      dto.shortDescription,
-      dto.content,
-      dto.blogId,
-      blogEntity.name,
-    );
+		const newEntity = new PostDb(
+			dto.title,
+			dto.shortDescription,
+			dto.content,
+			dto.blogId,
+			blogEntity.name,
+		);
 
-    return this.postsRepository.create(newEntity);
-  }
+		return this.postsRepository.create(newEntity);
+	}
 
-  async updateById(
-    id: string,
-    dto: PostInput,
-  ): Promise<{ notFound: boolean; entity: "post" | "blog" | null }> {
-    const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
+	async updateById(
+		id: string,
+		dto: PostInput,
+	): Promise<{ notFound: boolean; entity: "post" | "blog" | null }> {
+		const blogEntity = await this.blogsRepository.findOneById(dto.blogId);
 
-    if (!blogEntity) {
-      return { notFound: true, entity: "blog" };
-    }
+		if (!blogEntity) {
+			return { notFound: true, entity: "blog" };
+		}
 
-    const isUpdated = await this.postsRepository.updateById(id, {
-      ...dto,
-      blogName: blogEntity.name,
-    });
+		const isUpdated = await this.postsRepository.updateById(id, {
+			...dto,
+			blogName: blogEntity.name,
+		});
 
-    if (!isUpdated) {
-      return { notFound: true, entity: "post" };
-    }
+		if (!isUpdated) {
+			return { notFound: true, entity: "post" };
+		}
 
-    return { notFound: false, entity: null };
-  }
+		return { notFound: false, entity: null };
+	}
 
-  async deleteOneById(id: string): Promise<boolean> {
-    return await this.postsRepository.deleteOneById(id);
-  }
+	async deleteOneById(id: string): Promise<boolean> {
+		return await this.postsRepository.deleteOneById(id);
+	}
 }

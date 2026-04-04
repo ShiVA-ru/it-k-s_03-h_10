@@ -1,26 +1,26 @@
-import { WithId } from "mongodb";
-import { BlogDb } from "../../types/blogs.db.type";
-import { mapEntityToViewModel } from "./blogs.entity-map";
-import { Paginator } from "../../../../core/types/paginator.type";
-import { BlogView } from "../../types/blogs.view.type";
+import type { WithId } from "mongodb";
+import type { Paginator } from "../../../../core/types/paginator.type.js";
+import type { BlogDb } from "../../types/blogs.db.type.js";
+import type { BlogView } from "../../types/blogs.view.type.js";
+import { mapEntityToViewModel } from "./blogs.entity-map.js";
 
 export const mapBlogsToPaginatedView = (
-  dbEntities: WithId<BlogDb>[],
-  meta: {
-    page: number;
-    pageSize: number;
-    totalCount: number;
-  },
+	dbEntities: WithId<BlogDb>[],
+	meta: {
+		page: number;
+		pageSize: number;
+		totalCount: number;
+	},
 ): Paginator<BlogView> => {
-  const pagesCount = Math.ceil(meta.totalCount / meta.pageSize);
+	const pagesCount = Math.ceil(meta.totalCount / meta.pageSize);
 
-  const mappedBlogs = dbEntities.map(mapEntityToViewModel);
+	const mappedBlogs = dbEntities.map(mapEntityToViewModel);
 
-  return {
-    items: mappedBlogs,
-    pagesCount,
-    page: meta.page,
-    pageSize: meta.pageSize,
-    totalCount: meta.totalCount,
-  };
+	return {
+		items: mappedBlogs,
+		pagesCount,
+		page: meta.page,
+		pageSize: meta.pageSize,
+		totalCount: meta.totalCount,
+	};
 };

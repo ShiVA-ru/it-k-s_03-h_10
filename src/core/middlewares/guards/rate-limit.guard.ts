@@ -1,41 +1,41 @@
 import type { NextFunction, Request, Response } from "express";
-import { requestsCollection } from "../../../db/mongo";
-import config from "../../settings/config";
-import { HttpStatus } from "../../types/http-statuses.types";
+import { requestsCollection } from "../../../db/mongo.js";
+import config from "../../settings/config.js";
+import { HttpStatus } from "../../types/http-statuses.types.js";
 
 export const rateLimitGuardMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  const requestIp = req.ip;
-  // req.headers["x-forwarded-for"]as ||
+	const requestIp = req.ip;
+	// req.headers["x-forwarded-for"]as ||
 
-  if (!requestIp) {
-    throw new Error("now ip in request");
-  }
+	if (!requestIp) {
+		throw new Error("now ip in request");
+	}
 
-  const requestPathname = req.originalUrl;
+	const requestPathname = req.originalUrl;
 
-  await requestsCollection.insertOne({
-    ip: requestIp,
-    url: requestPathname,
-    date: new Date(),
-  });
+	await requestsCollection.insertOne({
+		ip: requestIp,
+		url: requestPathname,
+		date: new Date(),
+	});
 
-  const requestCount = await requestsCollection.countDocuments({
-    $and: [
-      { ip: { $regex: requestIp, $options: "i" } },
-      { url: { $regex: requestPathname, $options: "i" } },
-      {
-        date: { $gte: new Date(Date.now() - +config.rateLimitInterval * 1000) },
-      },
-    ],
-  });
+	const requestCount = await requestsCollection.countDocuments({
+		$and: [
+			{ ip: { $regex: requestIp, $options: "i" } },
+			{ url: { $regex: requestPathname, $options: "i" } },
+			{
+				date: { $gte: new Date(Date.now() - +config.rateLimitInterval * 1000) },
+			},
+		],
+	});
 
-  if (requestCount > +config.rateLimitCount) {
-    return res.sendStatus(HttpStatus.TooManyRequests);
-  }
+	if (requestCount > +config.rateLimitCount) {
+		return res.sendStatus(HttpStatus.TooManyRequests);
+	}
 
-  next();
+	next();
 };

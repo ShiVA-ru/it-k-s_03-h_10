@@ -1,42 +1,42 @@
 import type { NextFunction, Request, Response } from "express";
-import { HttpStatus } from "../../../core/types/http-statuses.types";
-import { isSuccessResult } from "../../../core/utils/type-guards";
-// import { UsersService } from "../../users/application/users.service";
-import { jwtService } from "../application/jwt.service";
+import { HttpStatus } from "../../../core/types/http-statuses.types.js";
+import { isSuccessResult } from "../../../core/utils/type-guards.js";
+// import { UsersService } from "../../users/application/users.service.js";
+import { jwtService } from "../application/jwt.service.js";
 
 // const usersService = new UsersService();
 
 export const refreshTokenGuardMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  const token = req.cookies.refreshToken;
+	const token = req.cookies.refreshToken;
 
-  if (!token) {
-    return res.sendStatus(HttpStatus.Unauthorized);
-  }
+	if (!token) {
+		return res.sendStatus(HttpStatus.Unauthorized);
+	}
 
-  const verifyResult = await jwtService.verifyRefreshToken(token);
+	const verifyResult = await jwtService.verifyRefreshToken(token);
 
-  if (!isSuccessResult(verifyResult)) {
-    return res.sendStatus(HttpStatus.Unauthorized);
-  }
+	if (!isSuccessResult(verifyResult)) {
+		return res.sendStatus(HttpStatus.Unauthorized);
+	}
 
-  const userId = verifyResult.data.userId;
-  const deviceId = verifyResult.data.deviceId;
-  const iat = verifyResult.data.iat;
+	const userId = verifyResult.data.userId;
+	const deviceId = verifyResult.data.deviceId;
+	const iat = verifyResult.data.iat;
 
-  // const userEntity = await usersService.findById(userId);
+	// const userEntity = await usersService.findById(userId);
 
-  // if (!userEntity) {
-  //   return res.sendStatus(HttpStatus.Unauthorized);
-  // }
+	// if (!userEntity) {
+	//   return res.sendStatus(HttpStatus.Unauthorized);
+	// }
 
-  req.refreshTokenPayload = {
-    userId,
-    deviceId,
-    iat,
-  };
-  next();
+	req.refreshTokenPayload = {
+		userId,
+		deviceId,
+		iat,
+	};
+	next();
 };

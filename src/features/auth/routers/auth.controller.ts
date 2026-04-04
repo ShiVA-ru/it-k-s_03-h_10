@@ -1,24 +1,24 @@
 import type { Request, Response } from "express";
-import { createErrorMessages } from "../../../core/middlewares/validation/input-validation-result.middleware";
-import type { validationErrorsDto } from "../../../core/types/errors.types";
-import { HttpStatus } from "../../../core/types/http-statuses.types";
-import type { IdType } from "../../../core/types/id.types";
+import { createErrorMessages } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
+import type { validationErrorsDto } from "../../../core/types/errors.types.js";
+import { HttpStatus } from "../../../core/types/http-statuses.types.js";
+import type { IdType } from "../../../core/types/id.types.js";
 import type {
 	RequestWithBody,
 	RequestWithUserId,
-} from "../../../core/types/request.types";
-import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception";
-import { isSuccessResult } from "../../../core/utils/type-guards";
-import type { DevicesService } from "../../devices/application/devices.service";
-import type { UsersQueryRepository } from "../../users/repositories/users.query.repository";
-import type { UserInput } from "../../users/types/users.input.type";
-import type { RegistrationService } from "../application/auth.registration.service";
-import type { AuthService } from "../application/auth.service";
-import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
-import type { RegistrationEmail } from "../types/email.input.type";
-import type { LoginInput } from "../types/login.input.type";
-import type { MeView } from "../types/me.view.type";
-import type { PasswordRecoveryInput } from "../types/new-pass.input.type";
+} from "../../../core/types/request.types.js";
+import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
+import { isSuccessResult } from "../../../core/utils/type-guards.js";
+import type { DevicesService } from "../../devices/application/devices.service.js";
+import type { UsersQueryRepository } from "../../users/repositories/users.query.repository.js";
+import type { UserInput } from "../../users/types/users.input.type.js";
+import type { RegistrationService } from "../application/auth.registration.service.js";
+import type { AuthService } from "../application/auth.service.js";
+import type { RegistrationConfirmationCode } from "../types/confirmation.input.type.js";
+import type { RegistrationEmail } from "../types/email.input.type.js";
+import type { LoginInput } from "../types/login.input.type.js";
+import type { MeView } from "../types/me.view.type.js";
+import type { PasswordRecoveryInput } from "../types/new-pass.input.type.js";
 
 export class AuthController {
 	constructor(

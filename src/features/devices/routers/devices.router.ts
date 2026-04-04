@@ -1,30 +1,30 @@
 import { Router } from "express";
-import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.middleware";
-import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware";
-import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware";
-import { refreshTokenGuardMiddleware } from "../../auth/middlewares/refresh-token.guard";
-import { devicesController } from "../../../composition-root";
+import { devicesController } from "../../../composition-root.js";
+import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.middleware.js";
+import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
+import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
+import { refreshTokenGuardMiddleware } from "../../auth/middlewares/refresh-token.guard.js";
 
 export const devicesRouter = Router();
 
 devicesRouter
-  .get(
-    "/",
-    deviceMetaMiddleware,
-    refreshTokenGuardMiddleware,
-    devicesController.getUserActiveSessions.bind(devicesController),
-  )
+	.get(
+		"/",
+		deviceMetaMiddleware,
+		refreshTokenGuardMiddleware,
+		devicesController.getUserActiveSessions.bind(devicesController),
+	)
 
-  .delete(
-    "/",
-    refreshTokenGuardMiddleware,
-    devicesController.deleteDevices.bind(devicesController),
-  )
+	.delete(
+		"/",
+		refreshTokenGuardMiddleware,
+		devicesController.deleteDevices.bind(devicesController),
+	)
 
-  .delete(
-    "/:id",
-    refreshTokenGuardMiddleware,
-    idValidation,
-    inputValidationResultMiddleware,
-    devicesController.deleteDeviceByIdHandler.bind(devicesController),
-  );
+	.delete(
+		"/:id",
+		refreshTokenGuardMiddleware,
+		idValidation,
+		inputValidationResultMiddleware,
+		devicesController.deleteDeviceByIdHandler.bind(devicesController),
+	);

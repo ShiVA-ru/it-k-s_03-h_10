@@ -1,15 +1,15 @@
 import { randomUUID } from "node:crypto";
 import dayjs from "dayjs";
-import { emailAdapter } from "../../../adapters/email.adapter";
-import { ResultStatus } from "../../../core/types/result.code";
-import type { Result } from "../../../core/types/result.type";
-import type { UsersService } from "../../users/application/users.service";
-import type { UsersRepository } from "../../users/repositories/users.repository";
-import type { UserInput } from "../../users/types/users.input.type";
-import type { RegistrationConfirmationCode } from "../types/confirmation.input.type";
-import type { RegistrationEmail } from "../types/email.input.type";
-import type { PasswordRecoveryInput } from "../types/new-pass.input.type";
-import { bcryptService } from "./bcrypt.service";
+import { emailAdapter } from "../../../adapters/email.adapter.js";
+import { ResultStatus } from "../../../core/types/result.code.js";
+import type { Result } from "../../../core/types/result.type.js";
+import type { UsersService } from "../../users/application/users.service.js";
+import type { UsersRepository } from "../../users/repositories/users.repository.js";
+import type { UserInput } from "../../users/types/users.input.type.js";
+import type { RegistrationConfirmationCode } from "../types/confirmation.input.type.js";
+import type { RegistrationEmail } from "../types/email.input.type.js";
+import type { PasswordRecoveryInput } from "../types/new-pass.input.type.js";
+import { bcryptService } from "./bcrypt.service.js";
 
 export class RegistrationService {
 	constructor(

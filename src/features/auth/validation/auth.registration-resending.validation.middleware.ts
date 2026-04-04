@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { EMAIL_REGEX } from "../../../core/constants/regex.constants";
+import { EMAIL_REGEX } from "../../../core/constants/regex.constants.js";
 
 export const emailValidation = body("email")
 	.trim()

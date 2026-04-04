@@ -1,69 +1,69 @@
 import { ObjectId, type WithId } from "mongodb";
-import { postsCollection } from "../../../db/mongo";
-import type { PostDb } from "../types/posts.db.type";
+import { postsCollection } from "../../../db/mongo.js";
+import type { PostDb } from "../types/posts.db.type.js";
 
 export class PostsRepository {
-  async create(dto: PostDb): Promise<string> {
-    const result = await postsCollection.insertOne(dto);
+	async create(dto: PostDb): Promise<string> {
+		const result = await postsCollection.insertOne(dto);
 
-    return result.insertedId.toString();
-  }
+		return result.insertedId.toString();
+	}
 
-  async updateById(
-    id: string,
-    dto: Omit<PostDb, "createdAt">,
-  ): Promise<boolean> {
-    const updateResult = await postsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          title: dto.title,
-          shortDescription: dto.shortDescription,
-          content: dto.content,
-          blogId: dto.blogId,
-          blogName: dto.blogName,
-        },
-      },
-    );
+	async updateById(
+		id: string,
+		dto: Omit<PostDb, "createdAt">,
+	): Promise<boolean> {
+		const updateResult = await postsCollection.updateOne(
+			{ _id: new ObjectId(id) },
+			{
+				$set: {
+					title: dto.title,
+					shortDescription: dto.shortDescription,
+					content: dto.content,
+					blogId: dto.blogId,
+					blogName: dto.blogName,
+				},
+			},
+		);
 
-    if (updateResult.matchedCount < 1) {
-      return false;
-    }
+		if (updateResult.matchedCount < 1) {
+			return false;
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  async deleteOneById(id: string): Promise<boolean> {
-    const deleteResult = await postsCollection.deleteOne({
-      _id: new ObjectId(id),
-    });
+	async deleteOneById(id: string): Promise<boolean> {
+		const deleteResult = await postsCollection.deleteOne({
+			_id: new ObjectId(id),
+		});
 
-    if (deleteResult.deletedCount < 1) {
-      return false;
-    }
+		if (deleteResult.deletedCount < 1) {
+			return false;
+		}
 
-    return true;
-  }
+		return true;
+	}
 
-  async deleteByBlogId(blogId: string): Promise<void> {
-    const deleteResult = await postsCollection.deleteMany({
-      blogId: blogId,
-    });
+	async deleteByBlogId(blogId: string): Promise<void> {
+		const deleteResult = await postsCollection.deleteMany({
+			blogId: blogId,
+		});
 
-    if (deleteResult.deletedCount < 1) {
-      throw new Error("Post not exist");
-    }
+		if (deleteResult.deletedCount < 1) {
+			throw new Error("Post not exist");
+		}
 
-    return;
-  }
+		return;
+	}
 
-  async findOneById(id: string): Promise<WithId<PostDb> | null> {
-    const item = await postsCollection.findOne({ _id: new ObjectId(id) });
+	async findOneById(id: string): Promise<WithId<PostDb> | null> {
+		const item = await postsCollection.findOne({ _id: new ObjectId(id) });
 
-    if (!item) {
-      return null;
-    }
+		if (!item) {
+			return null;
+		}
 
-    return item;
-  }
+		return item;
+	}
 }
