@@ -8,6 +8,7 @@
     "watch": "tsc -w",
     "dev": "nodemon --inspect dist/index.js",
     "jest": "jest -i",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "lint": "eslint --fix .",
     "format": "prettier --write ."
   },
@@ -43,11 +44,11 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "jest": "^30.2.0",
+    "jest": "^30.3.0",
     "nodemon": "^3.1.11",
     "prettier": "^3.7.4",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.6",
+    "ts-jest": "^29.4.9",
     "typescript": "^5.9.3"
   }
 }

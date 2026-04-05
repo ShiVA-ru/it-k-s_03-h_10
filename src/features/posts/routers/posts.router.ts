@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postsController } from "../../../composition-root.js";
+import { container } from "../../../composition-root.js";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
 import { accessTokenGuardMiddleware } from "../../auth/middlewares/access-token.guard.js";
@@ -7,6 +7,9 @@ import { superAdminGuardMiddleware } from "../../auth/middlewares/super-admin.gu
 import { commentInputDtoValidation } from "../../comments/validation/comments.input-dto.validation.middleware.js";
 import { postInputDtoValidation } from "../validation/posts.input-dto.validation.middleware.js";
 import { paginationSortingValidation } from "../validation/posts.query.validation.middleware.js";
+import { PostsController } from "./posts.controller.js";
+
+const postsController = container.get(PostsController);
 
 export const postsRouter = Router();
 

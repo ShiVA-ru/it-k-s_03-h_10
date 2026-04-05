@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { blogsController } from "../../../composition-root.js";
+import { container } from "../../../composition-root.js";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
 import { superAdminGuardMiddleware } from "../../auth/middlewares/super-admin.guard.js";
@@ -7,6 +7,9 @@ import { blogPostInputDtoValidation } from "../../posts/validation/posts.input-d
 import { paginationSortingValidation } from "../../posts/validation/posts.query.validation.middleware.js";
 import { blogInputDtoValidation } from "../validation/blogs.input-dto.validation.middleware.js";
 import { paginationSortingSearchValidation } from "../validation/blogs.query.validation.middleware.js";
+import { BlogsController } from "./blogs.controller.js";
+
+const blogsController = container.get(BlogsController);
 
 export const blogsRouter = Router();
 

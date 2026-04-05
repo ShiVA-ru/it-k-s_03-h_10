@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { inject, injectable } from "inversify";
 import { createErrorMessages } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import type { validationErrorsDto } from "../../../core/types/errors.types.js";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
@@ -9,22 +10,27 @@ import type {
 } from "../../../core/types/request.types.js";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import type { DevicesService } from "../../devices/application/devices.service.js";
-import type { UsersQueryRepository } from "../../users/repositories/users.query.repository.js";
+import { DevicesService } from "../../devices/application/devices.service.js";
+import { UsersQueryRepository } from "../../users/repositories/users.query.repository.js";
 import type { UserInput } from "../../users/types/users.input.type.js";
-import type { RegistrationService } from "../application/auth.registration.service.js";
-import type { AuthService } from "../application/auth.service.js";
+import { RegistrationService } from "../application/auth.registration.service.js";
+import { AuthService } from "../application/auth.service.js";
 import type { RegistrationConfirmationCode } from "../types/confirmation.input.type.js";
 import type { RegistrationEmail } from "../types/email.input.type.js";
 import type { LoginInput } from "../types/login.input.type.js";
 import type { MeView } from "../types/me.view.type.js";
 import type { PasswordRecoveryInput } from "../types/new-pass.input.type.js";
 
+@injectable()
 export class AuthController {
 	constructor(
+		@inject(UsersQueryRepository)
 		private usersQueryRepository: UsersQueryRepository,
+		@inject(DevicesService)
 		private devicesService: DevicesService,
+		@inject(RegistrationService)
 		private registrationService: RegistrationService,
+		@inject(AuthService)
 		private authService: AuthService,
 	) {}
 

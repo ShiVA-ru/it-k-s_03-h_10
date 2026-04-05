@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Container, inject, injectable } from "inversify";
+import { Container } from "inversify";
 import { RegistrationService } from "./features/auth/application/auth.registration.service.js";
 import { AuthService } from "./features/auth/application/auth.service.js";
 import { AuthController } from "./features/auth/routers/auth.controller.js";
@@ -24,77 +24,34 @@ import { UsersQueryRepository } from "./features/users/repositories/users.query.
 import { UsersRepository } from "./features/users/repositories/users.repository.js";
 import { UsersController } from "./features/users/routers/users.controller.js";
 
-const commentsRepository = new CommentsRepository();
-const commentsQueryRepository = new CommentsQueryRepository();
-
-const postsRepository = new PostsRepository();
-const postsQueryRepository = new PostsQueryRepository();
-
-const blogsRepository = new BlogsRepository();
-const blogsQueryRepository = new BlogsQueryRepository();
-
-const usersRepository = new UsersRepository();
-const usersQueryRepository = new UsersQueryRepository();
-
-const devicesRepository = new DevicesRepository();
-const devicesQueryRepository = new DevicesQueryRepository();
-
-const commentsService = new CommentsService(
-	commentsRepository,
-	postsRepository,
-	usersRepository,
-);
-const postsService = new PostsService(postsRepository, blogsRepository);
-const blogsService = new BlogsService(blogsRepository);
-const devicesService = new DevicesService(devicesRepository);
-const usersService = new UsersService(usersRepository);
-const registrationService = new RegistrationService(
-	usersRepository,
-	usersService,
-);
-const authService = new AuthService(
-	devicesRepository,
-	usersRepository,
-	devicesService,
-);
-
-export const commentsController = new CommentsController(
-	commentsService,
-	commentsQueryRepository,
-);
-
-export const postsController = new PostsController(
-	commentsService,
-	commentsQueryRepository,
-	postsQueryRepository,
-	postsRepository,
-	postsService,
-);
-
-export const blogsController = new BlogsController(
-	postsQueryRepository,
-	blogsQueryRepository,
-	postsService,
-	blogsService,
-);
-
-export const devicesController = new DevicesController(
-	devicesQueryRepository,
-	devicesService,
-);
-
-export const usersController = new UsersController(
-	usersQueryRepository,
-	usersService,
-);
-
-export const authController = new AuthController(
-	usersQueryRepository,
-	devicesService,
-	registrationService,
-	authService,
-);
-
-const container: Container = new Container();
+export const container: Container = new Container();
 
 container.bind(CommentsRepository).toSelf();
+container.bind(CommentsQueryRepository).toSelf();
+
+container.bind(PostsRepository).toSelf();
+container.bind(PostsQueryRepository).toSelf();
+
+container.bind(BlogsRepository).toSelf();
+container.bind(BlogsQueryRepository).toSelf();
+
+container.bind(UsersRepository).toSelf();
+container.bind(UsersQueryRepository).toSelf();
+
+container.bind(DevicesRepository).toSelf();
+container.bind(DevicesQueryRepository).toSelf();
+
+container.bind(CommentsService).toSelf();
+container.bind(PostsService).toSelf();
+container.bind(BlogsService).toSelf();
+container.bind(DevicesService).toSelf();
+container.bind(UsersService).toSelf();
+container.bind(AuthService).toSelf();
+container.bind(RegistrationService).toSelf();
+
+container.bind(CommentsController).toSelf();
+container.bind(PostsController).toSelf();
+container.bind(BlogsController).toSelf();
+container.bind(DevicesController).toSelf();
+container.bind(UsersController).toSelf();
+container.bind(AuthController).toSelf();

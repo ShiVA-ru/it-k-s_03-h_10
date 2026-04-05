@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "isolatedModules": true,
   },
   "include": ["src/**/*"],
   "exclude": ["__tests__", "dist", "node_modules"],

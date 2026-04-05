@@ -1,12 +1,17 @@
+import { inject, injectable } from "inversify";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
 import { bcryptService } from "../../auth/application/bcrypt.service.js";
-import type { UsersRepository } from "../repositories/users.repository.js";
+import { UsersRepository } from "../repositories/users.repository.js";
 import { UserDb } from "../types/users.db.type.js";
 import type { UserInput } from "../types/users.input.type.js";
 
+@injectable()
 export class UsersService {
-	constructor(protected usersRepository: UsersRepository) {}
+	constructor(
+		@inject(UsersRepository)
+		protected usersRepository: UsersRepository,
+	) {}
 
 	async create(
 		dto: UserInput,

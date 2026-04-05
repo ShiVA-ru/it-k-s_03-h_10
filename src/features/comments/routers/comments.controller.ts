@@ -1,4 +1,5 @@
 import type { Response } from "express";
+import { inject, injectable } from "inversify";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import type { IdType } from "../../../core/types/id.types.js";
 import type {
@@ -9,14 +10,17 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import type { CommentsService } from "../application/comments.service.js";
-import type { CommentsQueryRepository } from "../repositories/comments.query.repository.js";
+import { CommentsService } from "../application/comments.service.js";
+import { CommentsQueryRepository } from "../repositories/comments.query.repository.js";
 import type { CommentInput } from "../types/comments.input.type.js";
 import type { CommentView } from "../types/comments.view.type.js";
 
+@injectable()
 export class CommentsController {
 	constructor(
+		@inject(CommentsService)
 		protected commentsService: CommentsService,
+		@inject(CommentsQueryRepository)
 		protected commentsQueryRepository: CommentsQueryRepository,
 	) {}
 	async getComment(

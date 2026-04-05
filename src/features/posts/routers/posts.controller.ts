@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
+import { inject, injectable } from "inversify";
 import type { validationErrorsDto } from "../../../core/types/errors.types.js";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import type { IdType } from "../../../core/types/id.types.js";
@@ -12,24 +13,30 @@ import type {
 } from "../../../core/types/request.types.js";
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import type { CommentsService } from "../../comments/application/comments.service.js";
-import type { CommentsQueryRepository } from "../../comments/repositories/comments.query.repository.js";
+import { CommentsService } from "../../comments/application/comments.service.js";
+import { CommentsQueryRepository } from "../../comments/repositories/comments.query.repository.js";
 import type { CommentInput } from "../../comments/types/comments.input.type.js";
 import type { CommentsQueryInput } from "../../comments/types/comments.query.type.js";
 import type { CommentView } from "../../comments/types/comments.view.type.js";
-import type { PostsService } from "../application/posts.service.js";
-import type { PostsQueryRepository } from "../repositories/posts.query.repository.js";
-import type { PostsRepository } from "../repositories/posts.repository.js";
+import { PostsService } from "../application/posts.service.js";
+import { PostsQueryRepository } from "../repositories/posts.query.repository.js";
+import { PostsRepository } from "../repositories/posts.repository.js";
 import type { PostInput } from "../types/posts.input.type.js";
 import type { PostsQueryInput } from "../types/posts.query.type.js";
 import type { PostView } from "../types/posts.view.type.js";
 
+@injectable()
 export class PostsController {
 	constructor(
+		@inject(CommentsService)
 		protected commentsService: CommentsService,
+		@inject(CommentsQueryRepository)
 		protected commentsQueryRepository: CommentsQueryRepository,
+		@inject(PostsQueryRepository)
 		protected postsQueryRepository: PostsQueryRepository,
+		@inject(PostsRepository)
 		protected postsRepository: PostsRepository,
+		@inject(PostsService)
 		protected postsService: PostsService,
 	) {}
 

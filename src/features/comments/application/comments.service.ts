@@ -1,16 +1,21 @@
+import { inject, injectable } from "inversify";
 import type { IdType } from "../../../core/types/id.types.js";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
-import type { PostsRepository } from "../../posts/repositories/posts.repository.js";
-import type { UsersRepository } from "../../users/repositories/users.repository.js";
-import type { CommentsRepository } from "../repositories/comments.repository.js";
+import { PostsRepository } from "../../posts/repositories/posts.repository.js";
+import { UsersRepository } from "../../users/repositories/users.repository.js";
+import { CommentsRepository } from "../repositories/comments.repository.js";
 import { CommentDb } from "../types/comments.db.type.js";
 import type { CommentInput } from "../types/comments.input.type.js";
 
+@injectable()
 export class CommentsService {
 	constructor(
+		@inject(CommentsRepository)
 		protected commentsRepository: CommentsRepository,
+		@inject(PostsRepository)
 		protected postsRepository: PostsRepository,
+		@inject(UsersRepository)
 		protected usersRepository: UsersRepository,
 	) {}
 

@@ -1,11 +1,15 @@
-import type { BlogsRepository } from "../../blogs/repositories/blogs.repository.js";
-import type { PostsRepository } from "../repositories/posts.repository.js";
+import { inject, injectable } from "inversify";
+import { BlogsRepository } from "../../blogs/repositories/blogs.repository.js";
+import { PostsRepository } from "../repositories/posts.repository.js";
 import { PostDb } from "../types/posts.db.type.js";
 import type { PostInput } from "../types/posts.input.type.js";
 
+@injectable()
 export class PostsService {
 	constructor(
+		@inject(PostsRepository)
 		protected postsRepository: PostsRepository,
+		@inject(BlogsRepository)
 		protected blogsRepository: BlogsRepository,
 	) {}
 

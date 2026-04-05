@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
+import { inject, injectable } from "inversify";
 import type {
 	validationErrorsDto,
 	validationErrorType,
@@ -12,22 +13,27 @@ import type {
 	RequestWithParamsAndBody,
 } from "../../../core/types/request.types.js";
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
-import type { PostsService } from "../../posts/application/posts.service.js";
-import type { PostsQueryRepository } from "../../posts/repositories/posts.query.repository.js";
+import { PostsService } from "../../posts/application/posts.service.js";
+import { PostsQueryRepository } from "../../posts/repositories/posts.query.repository.js";
 import type { BlogPostInput } from "../../posts/types/blogs-posts.input.type.js";
 import type { PostsQueryInput } from "../../posts/types/posts.query.type.js";
 import type { PostView } from "../../posts/types/posts.view.type.js";
-import type { BlogsService } from "../application/blogs.service.js";
-import type { BlogsQueryRepository } from "../repositories/blogs.query.repository.js";
+import { BlogsService } from "../application/blogs.service.js";
+import { BlogsQueryRepository } from "../repositories/blogs.query.repository.js";
 import type { BlogInput } from "../types/blogs.input.type.js";
 import type { BlogsQueryInput } from "../types/blogs.query.type.js";
 import type { BlogView } from "../types/blogs.view.type.js";
 
+@injectable()
 export class BlogsController {
 	constructor(
+		@inject(PostsQueryRepository)
 		protected postsQueryRepository: PostsQueryRepository,
+		@inject(BlogsQueryRepository)
 		protected blogsQueryRepository: BlogsQueryRepository,
+		@inject(PostsService)
 		protected postsService: PostsService,
+		@inject(BlogsService)
 		protected blogsService: BlogsService,
 	) {}
 

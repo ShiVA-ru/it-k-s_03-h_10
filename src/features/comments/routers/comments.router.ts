@@ -1,11 +1,14 @@
 import { Router } from "express";
-import { commentsController } from "../../../composition-root.js";
+import { container } from "../../../composition-root.js";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
 import { idValidation } from "../../../core/middlewares/validation/params-id-validation.middleware.js";
 import { accessTokenGuardMiddleware } from "../../auth/middlewares/access-token.guard.js";
 import { commentInputDtoValidation } from "../validation/comments.input-dto.validation.middleware.js";
+import { CommentsController } from "./comments.controller.js";
 
 export const commentsRouter = Router();
+
+const commentsController = container.get(CommentsController);
 
 commentsRouter
 	.get(

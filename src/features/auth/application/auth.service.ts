@@ -1,20 +1,25 @@
+import { inject, injectable } from "inversify";
 import type { DeviceMeta } from "../../../core/types/device-meta.types.js";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import type { DevicesService } from "../../devices/application/devices.service.js";
-import type { DevicesRepository } from "../../devices/repositories/devices.repository.js";
+import { DevicesService } from "../../devices/application/devices.service.js";
+import { DevicesRepository } from "../../devices/repositories/devices.repository.js";
 import { mapEntityToViewModel } from "../../users/repositories/mappers/users.entity-map.js";
-import type { UsersRepository } from "../../users/repositories/users.repository.js";
+import { UsersRepository } from "../../users/repositories/users.repository.js";
 import type { UserView } from "../../users/types/users.view.type.js";
 import type { TokenPair } from "../types/token-pair.type.js";
 import { bcryptService } from "./bcrypt.service.js";
 import { jwtService } from "./jwt.service.js";
 
+@injectable()
 export class AuthService {
 	constructor(
+		@inject(DevicesRepository)
 		private devicesRepository: DevicesRepository,
+		@inject(UsersRepository)
 		private usersRepository: UsersRepository,
+		@inject(DevicesService)
 		private devicesService: DevicesService,
 	) {}
 

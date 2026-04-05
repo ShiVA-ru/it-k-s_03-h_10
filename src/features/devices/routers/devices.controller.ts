@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { inject, injectable } from "inversify";
 import { HttpStatus } from "../../../core/types/http-statuses.types.js";
 import type { IdType } from "../../../core/types/id.types.js";
 import type {
@@ -6,13 +7,16 @@ import type {
 	RequestWithUserId,
 } from "../../../core/types/request.types.js";
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
-import type { DevicesService } from "../application/devices.service.js";
-import type { DevicesQueryRepository } from "../repositories/devices.query.repository.js";
+import { DevicesService } from "../application/devices.service.js";
+import { DevicesQueryRepository } from "../repositories/devices.query.repository.js";
 import type { DeviceView } from "../types/devices.view.type.js";
 
+@injectable()
 export class DevicesController {
 	constructor(
+		@inject(DevicesQueryRepository)
 		protected devicesQueryRepository: DevicesQueryRepository,
+		@inject(DevicesService)
 		protected devicesService: DevicesService,
 	) {}
 

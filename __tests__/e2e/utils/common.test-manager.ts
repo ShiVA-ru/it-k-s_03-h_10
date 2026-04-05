@@ -1,21 +1,21 @@
-import config from "../../../src/core/settings/config";
-import { closeDB, runDB } from "../../../src/db/mongo";
-import { setupApp } from "../../../src/setup-app";
 import express from "express";
-import { generateBasicAuthToken } from "./generate-admin-auth-token";
+import config from "../../../src/core/settings/config.js";
+import { closeDB, runDB } from "../../../src/db/mongo.js";
+import { setupApp } from "../../../src/setup-app.js";
+import { generateBasicAuthToken } from "./generate-admin-auth-token.js";
 
 export const commonTestManager = {
-  adminToken: generateBasicAuthToken(),
-  async initApp() {
-    const app = express();
-    setupApp(app);
+	adminToken: generateBasicAuthToken(),
+	async initApp() {
+		const app = express();
+		setupApp(app);
 
-    await runDB(config.mongoUrl);
+		await runDB(config.mongoUrl);
 
-    return app;
-  },
+		return app;
+	},
 
-  async closeApp() {
-    await closeDB();
-  },
+	async closeApp() {
+		await closeDB();
+	},
 };

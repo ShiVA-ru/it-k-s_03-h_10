@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { ObjectId } from "mongodb";
 import type { Paginator } from "../../../core/types/paginator.type.js";
 import { buildDbQueryOptions } from "../../../core/utils/build-db-query-options.js";
@@ -7,6 +8,7 @@ import type { BlogView } from "../types/blogs.view.type.js";
 import { mapBlogsToPaginatedView } from "./mappers/blogs.entity-list-map.js";
 import { mapEntityToViewModel } from "./mappers/blogs.entity-map.js";
 
+@injectable()
 export class BlogsQueryRepository {
 	async findAll(queryDto: BlogsQueryInput): Promise<Paginator<BlogView>> {
 		const { skip, limit, sort } = buildDbQueryOptions(queryDto);

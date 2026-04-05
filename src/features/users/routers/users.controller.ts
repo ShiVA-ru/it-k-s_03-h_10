@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
+import { inject, injectable } from "inversify";
 import type {
 	validationErrorsDto,
 	validationErrorType,
@@ -13,15 +14,18 @@ import type {
 import type { URIParamsId } from "../../../core/types/uri-params.type.js";
 import { resultCodeToHttpException } from "../../../core/utils/result-code-to-http-exception.js";
 import { isSuccessResult } from "../../../core/utils/type-guards.js";
-import type { UsersService } from "../application/users.service.js";
-import type { UsersQueryRepository } from "../repositories/users.query.repository.js";
+import { UsersService } from "../application/users.service.js";
+import { UsersQueryRepository } from "../repositories/users.query.repository.js";
 import type { UserInput } from "../types/users.input.type.js";
 import type { UsersQueryInput } from "../types/users.query.type.js";
 import type { UserView } from "../types/users.view.type.js";
 
+@injectable()
 export class UsersController {
 	constructor(
+		@inject(UsersQueryRepository)
 		private usersQueryRepository: UsersQueryRepository,
+		@inject(UsersService)
 		private usersService: UsersService,
 	) {}
 

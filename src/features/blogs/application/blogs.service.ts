@@ -1,9 +1,14 @@
-import type { BlogsRepository } from "../repositories/blogs.repository.js";
+import { inject, injectable } from "inversify";
+import { BlogsRepository } from "../repositories/blogs.repository.js";
 import { BlogDb } from "../types/blogs.db.type.js";
 import type { BlogInput } from "../types/blogs.input.type.js";
 
+@injectable()
 export class BlogsService {
-	constructor(protected blogsRepository: BlogsRepository) {}
+	constructor(
+		@inject(BlogsRepository)
+		protected blogsRepository: BlogsRepository,
+	) {}
 
 	async create(dto: BlogInput): Promise<string> {
 		const newEntity = new BlogDb(dto.name, dto.description, dto.websiteUrl);

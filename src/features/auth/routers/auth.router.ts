@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authController } from "../../../composition-root.js";
+import { container } from "../../../composition-root.js";
 import { deviceMetaMiddleware } from "../../../core/middlewares/device-meta.middleware.js";
 import { rateLimitGuardMiddleware } from "../../../core/middlewares/guards/rate-limit.guard.js";
 import { inputValidationResultMiddleware } from "../../../core/middlewares/validation/input-validation-result.middleware.js";
@@ -10,8 +10,11 @@ import { loginInputDtoValidation } from "../validation/auth.input-dto.validation
 import { newPasswordDtoValidation } from "../validation/auth.new-pass.validation.middleware.js";
 import { confirmationCodeValidation } from "../validation/auth.registration-confirm.validation.middleware.js";
 import { emailValidation } from "../validation/auth.registration-resending.validation.middleware.js";
+import { AuthController } from "./auth.controller.js";
 
 export const authRouter = Router();
+
+const authController = container.get(AuthController);
 
 authRouter
 	.post(

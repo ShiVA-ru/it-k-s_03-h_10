@@ -1,7 +1,9 @@
+import { injectable } from "inversify";
 import type { WithId } from "mongodb";
 import { devicesCollection } from "../../../db/mongo.js";
 import type { DeviceDb } from "../types/devices.db.type.js";
 
+@injectable()
 export class DevicesRepository {
 	async create(dto: DeviceDb): Promise<string> {
 		const result = await devicesCollection.insertOne(dto);

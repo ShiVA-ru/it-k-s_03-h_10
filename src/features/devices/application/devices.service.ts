@@ -1,12 +1,17 @@
 import dayjs from "dayjs";
+import { inject, injectable } from "inversify";
 import type { DeviceMeta } from "../../../core/types/device-meta.types.js";
 import { ResultStatus } from "../../../core/types/result.code.js";
 import type { Result } from "../../../core/types/result.type.js";
-import type { DevicesRepository } from "../repositories/devices.repository.js";
+import { DevicesRepository } from "../repositories/devices.repository.js";
 import { DeviceDb } from "../types/devices.db.type.js";
 
+@injectable()
 export class DevicesService {
-	constructor(protected devicesRepository: DevicesRepository) {}
+	constructor(
+		@inject(DevicesRepository)
+		protected devicesRepository: DevicesRepository,
+	) {}
 
 	async create(
 		dto: DeviceMeta & { userId: string },
